@@ -1,0 +1,765 @@
+ ++++++++++++++++++++++++++++++Git and github++++++++++++++++++++++++++
+
+name : Abdulkhadar & Malik basha
+Reviewer : Maheswara Reddy
+
+Contents
+
+1 Git and GitHub
+     1.1 Version Control System
+     1.2 Installing Git on Virtual Machine 'Ubuntu' 
+     1.3 Git Stages like Working directory,staging,local repository. ( include Practice on VM)
+     1.4 I covered code changes with different git stages and local commits .
+     1.5 I understood the essence of git and github 
+     1.6 I learned creating GitHub account, a repository, cloning a repository from GitHub and push code on to remote repository.
+
+     1.7 git clone & git pull 
+     1.8 connecting using ssh
+     1.9 git commits
+     2.0 git branches
+2 Devops engineer roles on git
+     2.1 Repository setup in the real world.
+
+
+Git : git is version control tool also called source code management tool
+
+GitHub : it is a repository which is used to store the code.
+
+version control system : version control systems are tools that helps a software team manage changes to source code over time
+
+Installing Git on Virtual Machine 'Ubuntu' : 
+[sudo apt-get update] -----> it will featch and download latest libraries/apt like .... ges [1870 kB]
+Fetched 2130 kB in 1s (3358 kB/s)
+Reading package lists... Done
+
+[sudo apt-get install git] -----> this command is used to download git tool
+
+before starting we need to configure 
+1.git init
+2.git config --global user.name="Abdul"
+3.git config --global user.name="abdul.kutagolla@accionlabs.com"
+4.git config --global --list -----> it helps to check the configuration
+
+note---> it is one time process
+
+steps to git stages :
+
+step 1----------------------->
+
+working directory ---> [git init] this will initalize .git folder that means it represents as working directory of git
+
+example : 
+AL5422@ALIPL2680 MINGW64 /d/git
+$ git init
+Initialized empty Git repository in D:/git/.git/ ----> initialized empty git repository
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$ cat > git_commands
+apt-get update
+sudo apt-get install git
+git init
+
+now working directory looks like -----> .git
+                                         git_commands
+
+git status ---> this commands help to find the status of files whether they are tracked or untracked.
+
+Example ...
+$ git status
+
+On branch master
+
+No commits yet
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        git_commands--> now its in red (red means untracked)
+
+nothing added to commit but untracked files present (use "git add" to track)
+
+now we have to send this to staging area.....
+
+step 2 --------------------------------------->
+
+staging area ------->
+
+git add . or git add [filename]
+
+we can do this in two ways 
+
+1.git add filename--> if we have one untracked file then we can use this command or if we have more untracked files then we have git add .  command (.) it points to working directory.
+
+example:
+
+$ git add git_commands
+warning: in the working copy of 'git_commands', LF will be replaced by CRLF the next time Git touches it
+
+git status --->
+On branch master
+
+No commits yet
+
+Changes to be committed:
+  (use "git rm --cached <file>..." to unstage)
+        new file:   git_commands ----> now its in green (green means tracked file -- staging area)
+
+step 3 ---------------------------------------->
+
+local repository ------->
+
+every tracked file need to commit to local repository 
+
+note -- here staging and local repository virtual things we cant see.
+
+git commit -m "commit message here"
+
+here -m means message it is helpful for futher steps.
+
+example:
+
+ $ git commit -m "basic git commands"
+[master (root-commit) 6851b53] basic git commands
+ Committer: Abdul Khadar Kutagolla <AL5422@accionlabs.in>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 1 file changed, 3 insertions(+)
+ create mode 100644 git_commands
+
+so, we commited staging area files to local respository with commit message as "basic git commands"
+
+git status ----->
+
+$ git status
+On branch master
+nothing to commit, working tree clean
+
+for example if we modify tarcked files then again its called untarcked file 
+example ---> 
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$ ls
+git_commands
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$ vi git_commands ----- added few more commands in this file, so now it is untracked file
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$ git status
+On branch master
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   git_commands -----> it looks red that means untracked file, so again we need to add staging and then local repository.
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$ git add .
+warning: in the working copy of 'git_commands', LF will be replaced by CRLF the next time Git touches it
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$ git commit -m "added few more commands"
+[master f756a49] added few more commands
+ Committer: Abdul Khadar Kutagolla <AL5422@accionlabs.in>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 1 file changed, 3 insertions(+)
+
+
+similary for any modified or new files we need to follow step 1, step 2 and step 3--------------------------------------->
+
+
+++++++ Code changes with different git stages and local commits +++++++
+
+
+git diff --> compare changes of working directory with staging area
+git diff --staged --> compare changes of staging area with local repo
+git diff HEAD --> comare chnages of working directory with local repo
+
+firstly we will compare working directory to staging area------>
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$ ls
+git_commands  git_more_commands  github_account
+
+here, 3 files exits git_commands already commited to local repository now, two files are created i.e git_more_commands and github_account both are in staging area,
+
+On branch master
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        new file:   git_more_commands
+        new file:   github_account
+
+now, i will modify both,
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   git_more_commands
+        modified:   github_account
+
+git diff ------> this help to find diff between working directory to staging area
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$ git diff
+
+warning: in the working copy of 'git_more_commands', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'github_account', LF will be replaced by CRLF the next time Git touches it
+diff --git a/git_more_commands b/git_more_commands
+index 7efafa2..cd10617 100644
+--- a/git_more_commands
++++ b/git_more_commands
+@@ -1,2 +1,2 @@
+-git diff
++git diff --- this help to find diff between working directory to staging area
+
+diff --git a/github_account b/github_account
+index a76537c..89fd225 100644
+--- a/github_account
++++ b/github_account
+@@ -1 +1,2 @@
+ step need to create account with accion labs mail
++we can store our code
+
+
+we will compare staging area to local repository------------------>
+
+$ git diff --staged
+diff --git a/git_more_commands b/git_more_commands
+index 7efafa2..52d0b86 100644
+--- a/git_more_commands
++++ b/git_more_commands
+@@ -1,2 +1,3 @@
+-git diff
++git diff --- this help to find diff between working directory to staging area
++staging area to local repo
+
+diff --git a/github_account b/github_account
+index a76537c..89fd225 100644
+--- a/github_account
++++ b/github_account
+@@ -1 +1,2 @@
+ step need to create account with accion labs mail
++we can store our code
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$ git diff --staged HEAD
+diff --git a/git_more_commands b/git_more_commands
+index 7efafa2..52d0b86 100644
+--- a/git_more_commands
++++ b/git_more_commands
+@@ -1,2 +1,3 @@
+-git diff
++git diff --- this help to find diff between working directory to staging area
++staging area to local repo
+
+diff --git a/github_account b/github_account
+index a76537c..89fd225 100644
+--- a/github_account
++++ b/github_account
+@@ -1 +1,2 @@
+ step need to create account with accion labs mail
++we can store our code
+
++++++++++++++++creating GitHub account, a repository, cloning a repository from GitHub and push code on to remote repository.+++++++++++
+
+Creating Github account ---->
+
+1. go to https://github.com/
+2. click on signUp
+3. enter mail -->continue
+4. enter password -->continue
+5. enter a username -->continue
+6. Would you like to receive product updates and announcements via email?
+Type "y" for yes or "n" for no --> n -->continue
+7. verify captcha --> create account.
+8. check mail copy code and paste in github--> done
+
+
+Creating a repository ----------->
+
+1. click on a new repository
+2. Repository name
+3. pubulic/private
+4. create repository
+
+follow below steps to connect to github
+
+push an existing repository from the command line
+git remote add origin https://github.com/Abdul7777K/Devops_Training.git
+git branch -M master
+git push -u origin master
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$ git remote add origin https://github.com/Abdul7777K/Devops_Training.git
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$ git branch -M master
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$ git push -u origin master
+Enumerating objects: 14, done.
+Counting objects: 100% (14/14), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (10/10), done.
+Writing objects: 100% (14/14), 1.27 KiB | 100.00 KiB/s, done.
+Total 14 (delta 1), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (1/1), done.
+To https://github.com/Abdul7777K/Devops_Training.git
+ * [new branch]      master -> master
+branch 'master' set up to track 'origin/master'.
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$
+
+successfully push files into github +++++++++++++++++++++++++++++++++++++++++++
+
+
+
+git log or git log --oneline ---> git log command is used to display logs of the file like commit id, author and date.
+
+and we can also reduce this information by using --oneline
+example ---
+$ git log --oneline
+1f4eb20 (HEAD -> master, origin/master) 4th
+124782d 3rd
+f756a49 added few more commands
+6851b53 basic git commands
+
+
++++++++++++++ git clone +++++++++++++++++
+
+git clone vs git pull
+
+git clone --> incase if devoloper dont have code locally then he will perform git clone
+
+example--
+
+AL5422@ALIPL2680 MINGW64 /d/New folder
+$ git clone https://github.com/Abdul7777K/Devops_Training.git
+Cloning into 'Devops_Training'...
+remote: Enumerating objects: 14, done.
+remote: Counting objects: 100% (14/14), done.
+remote: Compressing objects: 100% (9/9), done.
+remote: Total 14 (delta 1), reused 14 (delta 1), pack-reused 0
+Receiving objects: 100% (14/14), done.
+Resolving deltas: 100% (1/1), done.
+
+AL5422@ALIPL2680 MINGW64 /d/New folder
+$ ls
+Devops_Training/ -------------> see successfully cloned entire project.
+
+
+git pull ---> git pull if devoloper have code locally then he will perform git pull
+
+
+
++++++++++connecting using ssh+++++++++++++++++++++++++++++++++
+
+steps
+
+1. go to code --> ssh --> copy link - git@github.com:Abdul7777K/Devops_Training.git
+2. git bash --> git clone git@github.com:Abdul7777K/Devops_Training.git
+we will get permission error like below
+
+AL5422@ALIPL2680 MINGW64 /d/New folder
+$ git clone git@github.com:Abdul7777K/Devops_Training.git
+Cloning into 'Devops_Training'...
+The authenticity of host 'github.com (20.207.73.82)' can't be established.
+ED25519 key fingerprint is SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU.
+This key is not known by any other names.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'github.com' (ED25519) to the list of known hosts.
+git@github.com: Permission denied (publickey).
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+
+3.create public and private keys --> $ ssh-keygen -t rsa -b 4096
+
+4.go to this location -->cd /c/Users/AL5422/.ssh/
+5.$ ls
+id_rsa  id_rsa.pub  known_hosts  known_hosts.old
+
+6.copy public key and go to github settings
+7.ssh and gpg key -->new ssh keys --> paste public key -->add ssh key.
+8.go to git bash --> git clone git@github.com:Abdul7777K/Devops_Training.git
+
+AL5422@ALIPL2680 MINGW64 ~/.ssh
+$ git clone git@github.com:Abdul7777K/Devops_Training.git
+Cloning into 'Devops_Training'...
+remote: Enumerating objects: 14, done.
+remote: Counting objects: 100% (14/14), done.
+remote: Compressing objects: 100% (9/9), done.
+remote: Total 14 (delta 1), reused 14 (delta 1), pack-reused 0
+Receiving objects: 100% (14/14), done.
+Resolving deltas: 100% (1/1), done.
+
+done .................................................................
+
+
+++++++++++++++++++git branches +++++++++++++++++++++++++++++++++++++
+
+branching --> this feature is provided in git so that developers can create code related to different functionality on separate branches.
+
+this helps the developement team in creating the code in on uncluttered way
+
+later this code can be merged with master branch
+
+default branch of git is master.
+
+
+examples:
+
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$ ls
+git_commands  git_more_commands  github_account
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$ touch f1 f2
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$ ls
+f1  f2  git_commands  git_more_commands  github_account
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$ git status
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        f1
+        f2
+
+nothing added to commit but untracked files present (use "git add" to track)
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$ git add ..
+fatal: ..: '..' is outside repository at 'D:/git'
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$ git add .
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$ git commit -m "files"
+[master fd3b23f] files
+ Committer: Abdul Khadar Kutagolla <AL5422@accionlabs.in>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 2 files changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 f1
+ create mode 100644 f2
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$ git branch
+* master
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$ git checkout feature_inprogress_branch
+error: pathspec 'feature_inprogress_branch' did not match any file(s) known to git
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$ git checkout -b feature_inprogress_branch
+Switched to a new branch 'feature_inprogress_branch'
+
+AL5422@ALIPL2680 MINGW64 /d/git (feature_inprogress_branch)
+$ touch f3 f4
+
+AL5422@ALIPL2680 MINGW64 /d/git (feature_inprogress_branch)
+$ ls
+f1  f2  f3  f4  git_commands  git_more_commands  github_account
+
+AL5422@ALIPL2680 MINGW64 /d/git (feature_inprogress_branch)
+$ git status
+On branch feature_inprogress_branch
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        f3
+        f4
+
+nothing added to commit but untracked files present (use "git add" to track)
+
+AL5422@ALIPL2680 MINGW64 /d/git (feature_inprogress_branch)
+$ git add .
+
+AL5422@ALIPL2680 MINGW64 /d/git (feature_inprogress_branch)
+$ git commit -m "new branch"
+[feature_inprogress_branch c9977c8] new branch
+ Committer: Abdul Khadar Kutagolla <AL5422@accionlabs.in>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 2 files changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 f3
+ create mode 100644 f4
+
+AL5422@ALIPL2680 MINGW64 /d/git (feature_inprogress_branch)
+$ ls
+f1  f2  f3  f4  git_commands  git_more_commands  github_account
+
+AL5422@ALIPL2680 MINGW64 /d/git (feature_inprogress_branch)
+$ git checkout master
+Switched to branch 'master'
+Your branch is ahead of 'origin/master' by 1 commit.
+  (use "git push" to publish your local commits)
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$ git branches
+git: 'branches' is not a git command. See 'git --help'.
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$ git branche
+git: 'branche' is not a git command. See 'git --help'.
+
+The most similar command is
+        branch
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$ git branch
+  feature_inprogress_branch
+* master
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$ git merge feature_inprogress_branch
+Updating fd3b23f..c9977c8
+Fast-forward
+ f3 | 0
+ f4 | 0
+ 2 files changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 f3
+ create mode 100644 f4
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$ git push
+Enumerating objects: 6, done.
+Counting objects: 100% (6/6), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (4/4), done.
+Writing objects: 100% (5/5), 533 bytes | 177.00 KiB/s, done.
+Total 5 (delta 1), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (1/1), done.
+To https://github.com/Abdul7777K/Devops_Training.git
+   1f4eb20..c9977c8  master -> master
+
+AL5422@ALIPL2680 MINGW64 /d/git (master)
+$
+
+Git Working With Commits
+
+Head always represents master branch 
+and in this we can see time date commit id . 
+Ex :-
+$ git log
+commit f22c510b9655efdf8a87b8bf1683ae1a329f76cd (HEAD -> master)
+Author: Malik Basha <kutagoolmalik@gmail.com>
+Date:   Mon Jan 23 15:11:18 2023 +0530
+
+    this is my 1st commit
+
+
+GIT DIFF :-
+
+this command will compare two different commits 
+
+Ex:- 
+AL5423@ALIPL2682 MINGW64 ~/Downloads/Practice/Demo Repo (master)
+$ git diff  c334bf2689416725777f0fd381f2dd8295b29143   f22c510b9655efdf8a87b8bf1683ae1a329f76cd
+diff --git a/file1 b/file1
+index a1435fe..e69de29 100644
+--- a/file1
++++ b/file1
+@@ -1,2 +0,0 @@
+-this is 1st file
+-
+diff --git a/file2 b/file2
+index 32d7192..e69de29 100644
+--- a/file2
++++ b/file2
+@@ -1 +0,0 @@
+-this is file2
+diff --git a/file3 b/file3
+deleted file mode 100644
+index a309e46..0000000
+--- a/file3
++++ /dev/null
+@@ -1 +0,0 @@
+-this is file3
+diff --git a/file4 b/file4
+deleted file mode 100644
+index e69de29..0000000
+:...skipping...
+diff --git a/file1 b/file1
+index a1435fe..e69de29 100644
+--- a/file1
++++ b/file1
+@@ -1,2 +0,0 @@
+-this is 1st file
+-
+diff --git a/file2 b/file2
+index 32d7192..e69de29 100644
+--- a/file2
++++ b/file2
+@@ -1 +0,0 @@
+-this is file2
+diff --git a/file3 b/file3
+deleted file mode 100644
+index a309e46..0000000
+--- a/file3
++++ /dev/null
+@@ -1 +0,0 @@
+-this is file3
+diff --git a/file4 b/file4
+deleted file mode 100644
+index e69de29..0000000
+diff --git a/file5 b/file5
+deleted file mode 100644
+index 8cb58f4..0000000
+--- a/file5
++++ /dev/null
+@@ -1 +0,0 @@
+-This is my 5th file
+diff --git a/file6 b/file6
+deleted file mode 100644
+index 47f80d8..0000000
+--- a/file6
++++ /dev/null
+@@ -1 +0,0 @@
+-This is my 6th file
+diff --git a/file7 b/file7
+deleted file mode 100644
+index e69de29..0000000
+diff --git a/file8 b/file8
+deleted file mode 100644
+index e69de29..0000000
+~
+~
+~
+~
+END
+
+
+GIT SHOW :-
+
+It will show what are the changes we have done in the commit
+
+
+EX:-
+AL5423@ALIPL2682 MINGW64 ~/Downloads/Practice/Demo Repo (master)
+$ git show
+commit c334bf2689416725777f0fd381f2dd8295b29143 (HEAD -> master)
+Author: Malik Basha <kutagoolmalik@gmail.com>
+Date:   Wed Jan 25 13:22:19 2023 +0530
+
+     this is my 3rd commit
+
+diff --git a/file7 b/file7
+new file mode 100644
+index 0000000..e69de29
+diff --git a/file8 b/file8
+new file mode 100644
+index 0000000..e69de29
+
+AL5423@ALIPL2682 MINGW64 ~/Downloads/Practice/Demo Repo (master)
+$
+
+
+git annotate:-
+
+This commade will show who has modified ( or ) edited the file 
+
+EX:-
+
+ AL5423@ALIPL2682 MINGW64 ~/Downloads/Practice/Demo Repo (master)
+$ git annotate
+usage: git annotate [<options>] [<rev-opts>] [<rev>] [--] <file>
+
+    <rev-opts> are documented in git-rev-list(1)
+
+    --incremental         show blame entries as we find them, incrementally
+    -b                    do not show object names of boundary commits (Default: off)
+    --root                do not treat root commits as boundaries (Default: off)
+    --show-stats          show work cost statistics
+    --progress            force progress reporting
+    --score-debug         show output score for blame entries
+    -f, --show-name       show original filename (Default: auto)
+    -n, --show-number     show original linenumber (Default: off)
+    -p, --porcelain       show in a format designed for machine consumption
+    --line-porcelain      show porcelain format with per-line commit information
+    -c                    use the same output mode as git-annotate (Default: off)
+    -t                    show raw timestamp (Default: off)
+    -l                    show long commit SHA1 (Default: off)
+    -s                    suppress author name and timestamp (Default: off)
+    -e, --show-email      show author email instead of name (Default: off)
+    -w                    ignore whitespace differences
+    --ignore-rev <rev>    ignore <rev> when blaming
+    --ignore-revs-file <file>
+                          ignore revisions from <file>
+    --color-lines         color redundant metadata from previous line differently
+    --color-by-age        color lines by age
+    --minimal             spend extra cycles to find better match
+    -S <file>             use revisions from <file> instead of calling git-rev-list
+    --contents <file>     use <file>'s contents as the final image
+    -C[<score>]           find line copies within and across files
+    -M[<score>]           find line movements within and across files
+    -L <range>            process only line range <start>,<end> or function :<funcname>
+    --abbrev[=<n>]        use <n> digits to display object names
+
+
+AL5423@ALIPL2682 MINGW64 ~/Downloads/Practice/Demo Repo (master)
+$
+
+
+++++++++++++++++++Repository setup in the real world+++++++++++
+
+1.create a private repository
+2.create 3 branches (prod, uat and dev)
+3.add team as collaborators to this repository
+4.enable ssh based authentication
+5.protect prod and uat branches
+6.one approval needed to chech in code on uat and 2 approval needed to check in code on to prod
+7.build and eploy should be successful before check in code onto uat as well as onto prod
+
+
+
