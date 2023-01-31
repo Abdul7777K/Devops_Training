@@ -1,0 +1,28 @@
+Linux commands ---------------->
+
+https://www.youtube.com/watch?v=Wgi-OfbP2Gw
+
+
+SDLC -------------------->
+
+https://www.youtube.com/watch?v=Fi3_BjVzpqk
+  
+Waterfall vs Agile -------------->
+
+https://www.youtube.com/watch?v=aKf0Qkp14qQ
+ 
+Agile deep dive ---------------------->
+ 
+https://www.youtube.com/watch?v=WjwEh15M5Rw
+  
+Devops intro ----------------------------->
+ 
+https://www.youtube.com/watch?v=Xrgk023l4lI
+
+Git and github -------------------------->
+
+https://accionlabs.udemy.com/course/valaxy-git/learn/lecture/22479188#overview
+
+Az900 Azure Fundamentals -----------> Today Mashesh Assigned this task
+
+https://accionlabs.udemy.com/course/valaxy-git/learn/lecture/22479188#overview

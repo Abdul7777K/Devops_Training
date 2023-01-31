@@ -1,0 +1,127 @@
+AZ 900 :
+
+Hand on Labs -----------
+
+Creating a basic virtual machine
+
+step 1 : Create a Resource Group
+         1.1 Project details ------ select Subscription and Resource Group name
+         1.2 Resource deatils ----- Select Regions
+         1.3 Click on Review+Create --- if Validation passed then click on Create.
+
+step 2 : Go to Resource Group which you created
+
+flow to follow to create VM --------> Basics ---->Disks---> Networking ---> Management ---> Monitoring  ----> Advanced ---> Tags ---> Review + Create.
+
+
+         2.1 Click on Create ----> MarketPlace---> Search the resource which you want ----> like Windows VM.
+         2.2 Create a virtual machine
+ 
+            -----------Basics ---------------
+
+           2.2.1 provide project details like Subscription, resource group
+           2.2.2 provide instance details like VM name, Region, image, size.
+           2.2.3 provide Administrator account like Username, password.
+           2.2.4 provide inbound port rules like public inbound ports, select inbound ports
+
+            ------------ Disks ----------------
+
+           2.2.5 provide Os dick details like os disk type.
+
+            ------------ Networking --------------
+
+           2.2.6 check Networking interface do according to the requirements
+
+            ------------ Management --------------
+
+           2.2.7 check Management page do according to the requirements
+
+            ------------ Monitoring --------------
+
+           2.2.8 check Monitoring page do according to the requirements
+
+           2.2.9 do similarly for Advanced and Tags like 2.2.7 and 2.2.8
+           2.2.10 Review + Create ----> Create
+
+
+Creating a Containers
+
+step 1 : Create a Resource Group
+         1.1 Project details ------ select Subscription and Resource Group name
+         1.2 Resource deatils ----- Select Regions
+         1.3 Click on Review+Create --- if Validation passed then click on Create.
+
+step 2 : Click on containers from marketplace
+step 3 : Select container instances
+step 4 : follow Basics ---> Networking ---> Advanced ---> Tags ---> Review + Create
+  
+       --------------- Basics ------------------
+         4.1 provide project details like Subscription, resource group
+         4.2 provide container details like container name, region, image source, image, size.
+         ---------------Networking------------------
+          4.3 type DNS name label
+          4.4 Review + Create ----> create
+
+Creating an Azure webapp
+
+
+step 1 : Create an Azure webapp resource group
+         1.1 Project details ------ select Subscription and Resource Group name
+         1.2 Resource deatils ----- Select Regions
+         1.3 Click on Review+Create --- if Validation passed then click on Create.
+
+step 2 : Click on webapps from marketplace
+step 3 : Select webApps
+step 4 : Click Create -- webApp
+step 5 : Create a webapp
+      5.1 provide project details like Subscription, resource group
+      5.2 provide instance details like name, publish, runtime stack, OS, Region.
+      5.3 provide App service Plan -- dont change anything. (default)
+
+          ---------------Monitoring-----------------
+
+      5.4 provide application insights --- dont change anything -- (default)
+      5.5 Review + Create --->  create.
+
+Creating a VM using powerShell
+
+step 1 : go to home page of azure portal
+step 2 : right side on top select powerShell icon
+step 3 : select powershell --> select subscription --> creating storage
+step 4 : PS /home/abdul> New-AzVM -ResourceGroupName "Powershell_practice" -name "vmubu" -Image "UbuntuLTS"  ---> make this command according to the requirements
+
+Creating a Vnet in Azure
+
+step 1 : Click on create a Resource
+step 2 : Click on virtual network from marketplace
+step 3 : Select virtual network
+
+flow to follow  Basic -----> Ip addresses ---> Security -----> Tags ---> Review + Create
+
+ ----------Basic ----------------
+step 4 : Click Create -- virtual network
+     4.1 provide project details like Subscription, resource group
+     4.2 provide instance details like name, Regions.
+-------------Ip addresses--------------
+     4.3 delete default Ipv4 addresses space
+     4.4 create new Ipv4 addresses space
+     4.5 create new subnet like subnet name, subnet address range----> add
+     4.6 add second subnet, follow 4.5
+-----------------Security--------------------
+     4.7 dont change anything --accept default 
+     4.8 review+create ----> create
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
