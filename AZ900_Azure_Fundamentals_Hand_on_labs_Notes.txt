@@ -112,6 +112,20 @@ step 4 : Click Create -- virtual network
      4.8 review+create ----> create
 
 
+Create and use Azure Blob storage
+
+step 1 : go to marketplace
+step 2 : search and select storage account
+step 3 : Create a storage account
+     3.1 provide project details like Subscription, resource group
+     3.2 provide instance details like Storage account name, Regions, Performance, Redundancy.
+     3.3 Review + Create
+step 4 : go to storage account 
+step 5 : under data storage select containers
+     5.1 click on create container
+       5.1.1 New container ---> name ----> public access level --->create
+       5.1.2 open created container ---> click on upload ---> upload some files from local ---> click on uploaded file --- > generate SAS and tocken url--- > copy below listed url in azure ---> paste in another window ---> done
+
 
 
 
