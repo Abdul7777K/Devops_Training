@@ -127,6 +127,56 @@ step 5 : under data storage select containers
        5.1.2 open created container ---> click on upload ---> upload some files from local ---> click on uploaded file --- > generate SAS and tocken url--- > copy below listed url in azure ---> paste in another window ---> done
 
 
+Creating azure files
+
+step 1 : go to marketplace
+step 2 : search and select storage account
+step 3 : Create a storage account
+     3.1 provide project details like Subscription, resource group
+     3.2 provide instance details like Storage account name, Regions, Performance, Redundancy.
+     3.3 Review + Create
+step 4 : go to storage account 
+step 5 : under data storage select File Shares
+     5.1 click on create File Share ---> name ---> tier ---> create
+     5.2 open create file share ---> connect --> for windows write script for windows and run in azure powershell ----> after creating connect to the vm.
+     5.3 go to the connect (windows) ---> select drive letter ---> copy terminal command
+     5.4 go back to vm and paste this in terminal.
+     5.5 go back to azure portal (connect) ---> upload files from port or you can upload files from azure. 
+
+Creating Azure tables
+
+
+step 1 : go to marketplace
+step 2 : search and select storage account
+step 3 : Create a storage account
+     3.1 provide project details like Subscription, resource group
+     3.2 provide instance details like Storage account name, Regions, Performance, Redundancy.
+     3.3 Review + Create
+step 4 : go to storage account 
+step 5 : under data storage select tables
+     5.1 click on  "+ table" 
+     5.2 after that go to storage browser ---> open tables ----> open table --> add entity.
+
+creating Azure queue
+
+
+step 1 : go to marketplace
+step 2 : search and select storage account
+step 3 : Create a storage account
+     3.1 provide project details like Subscription, resource group
+     3.2 provide instance details like Storage account name, Regions, Performance, Redundancy.
+     3.3 Review + Create
+step 4 : go to storage account 
+step 5 : under data storage select queue
+     5.1 click on  "+ queue" 
+     5.2 after that go to storage browser ---> open queues ----> open queue --> Add message to queue.
+
+
+Adding guest user to Azure AD
+
+step 1 : go to marketplace
+step 2 : search and select azure active directory
+step 3 : under manage ---> select user ----> new guest user ---> name, email, fullname, last name, massage box ---> invite ---> done
 
 
 
