@@ -178,6 +178,22 @@ step 1 : go to marketplace
 step 2 : search and select azure active directory
 step 3 : under manage ---> select user ----> new guest user ---> name, email, fullname, last name, massage box ---> invite ---> done
 
+Create an Azure AD B2C Tenant
+
+step 1 : Click the hamburger
+step 2 : Click All Services
+step 3 : Click Subscriptions
+step 4 : Click on subscription name ---> Click Resource Providers
+step 5 : Click Microsoft Azure to go to Home page --> Confirm Microsoft.AzureActiveDirectory is Registered.
+step 6 : Click Create a Resource
+step 7 : Click Search box
+step 8 : Type azure active directory b2c and press enter
+step 9 : Select azure active directory b2c
+step 10 : Click Plans to review plans
+step 11 : Click Create
+step 12 : Click Create a new Azure AD B2C Tenant
+step 13 : Fix directory details ---> review + create. 
+
 
 
 
