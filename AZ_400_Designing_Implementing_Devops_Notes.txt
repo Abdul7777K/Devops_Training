@@ -1,0 +1,12 @@
+<-----------------------------HANDS ON LABS ----------------------->
+
+Creating Azure Devops Free Account:
+
+Step 1 : Go to https://azure.microsoft.com/free.
+Step 2 : Click on "Start for free" button.
+Step 3 : You will be redirected to a sign-in form. You need the Microsoft account. 
+         If you don’t have any, created one or there is also the possibility to use GitHub account since Microsoft bought it.
+Step 4 : After your successful authorization you will be redirected to Identity verification by card form. 
+         Give credit card initials.
+Step 5 : Click sign up and Azure account is created.
+Setp 6 : Create Services Using Free Trail.
