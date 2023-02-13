@@ -10,3 +10,66 @@ Step 4 : After your successful authorization you will be redirected to Identity 
          Give credit card initials.
 Step 5 : Click sign up and Azure account is created.
 Setp 6 : Create Services Using Free Trail.
+
+
+
+Hands-on-labs : Deploying the self-hosted-agent
+
+
+step 1 : Create a Resource Group
+         1.1 Project details ------ select Subscription and Resource Group name
+         1.2 Resource deatils ----- Select Regions
+         1.3 Click on Review+Create --- if Validation passed then click on Create.
+
+step 2 : Go to Resource Group which you created
+
+flow to follow to create VM --------> Basics ---->Disks---> Networking ---> Management ---> Monitoring  ----> Advanced ---> Tags ---> Review + Create.
+
+
+         2.1 Click on Create ----> MarketPlace---> Search the resource which you want ----> like Windows VM.
+         2.2 Create a virtual machine
+ 
+            -----------Basics ---------------
+
+           2.2.1 provide project details like Subscription, resource group
+           2.2.2 provide instance details like VM name, Region, image, size.
+           2.2.3 provide Administrator account like Username, password.
+           2.2.4 provide inbound port rules like public inbound ports, select inbound ports
+
+            ------------ Disks ----------------
+
+           2.2.5 provide Os dick details like os disk type.
+
+            ------------ Networking --------------
+
+           2.2.6 check Networking interface do according to the requirements
+
+            ------------ Management --------------
+
+           2.2.7 check Management page do according to the requirements
+
+            ------------ Monitoring --------------
+
+           2.2.8 check Monitoring page do according to the requirements
+
+           2.2.9 do similarly for Advanced and Tags like 2.2.7 and 2.2.8
+           2.2.10 Review + Create ----> Create
+
+Step 3 : go to overview of Vm ---> click on connect ---> choose RDP ---> download
+Step 4 : open downloaded RDP and login with username and password
+Step 5 : download softwares according to the application ex : dot net (need to install .net 6.0 (sdk x64),  git )
+
+
+Hands-on-labs : Registering the self-hosted-agent
+
+Step 1 : open dev.azure.com portal of your organization
+Step 2 : go to profile personal access tokens ---- click on create a new personal access token --- name, go to agent pools -- check the both boxes ---create
+Step 3 : copy the token password
+Step 5 : go to orgainzation settings --> go to agent pools --> default pool or choose add pool ---> default pool -> new agent --> download the agent 
+Step 6 : extract the zip file of agent ---> open powershell and go inside the agent ---> type this command (./config.cmd) and hit enter.
+Step 7 : enter server url like dev.azure.com/mylearning 
+Step 8 : enter personal access tokens which you do in Step 3
+Step 9 : follow remain steps which shows in promt --> done
+
+
+now, when ever you want to create a pipeline, change pool vmimage: "ubuntu-lastest" to "name: "default"
