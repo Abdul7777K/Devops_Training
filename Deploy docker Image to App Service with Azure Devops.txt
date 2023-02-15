@@ -1,0 +1,69 @@
+Deploy docker Image to App Service with Azure Devops
+
+https://www.youtube.com/watch?v=7qyWriiUenw
+
+FROM nginx:alpine
+LABEL author="Sahil Malik"
+COPY ./dist/first-material /usr/share/nginx/html
+EXPOSE 80 443
+ENTRYPOINT [ "nginx", "-g", "daemon off;" ]
+
+trigger:
+- none
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+- stage: Build
+  jobs:
+  - job: Build
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '16.x'
+        displayName: 'Install Node.js 16.x'
+
+      - script: |
+          npm install -g @angular/cli
+          npm install
+          ng build --configuration production 
+        displayName: 'npm install and build'
+        workingDirectory: '$(Build.SourcesDirectory)'
+
+      - task: Docker@2
+        inputs:
+          containerRegistry: 'docker-service-connection' # Replace with the name of your Azure Container Registry
+          repository: 'material-app'
+          command: 'build'
+          Dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
+          tags: |
+            $(Build.BuildId)
+        displayName: 'Dockerize the app'
+
+      - task: Docker@2
+        inputs:
+          containerRegistry: 'docker-service-connection' # Replace with the name of your Azure Container Registry
+          repository: 'material-app'
+          command: 'push'
+          tags: |
+            $(Build.BuildId)
+        displayName: 'Push the app to Azure Container Registry'
+
+- stage: Deploy
+  dependsOn: Build
+  jobs:
+  - job: Deploy
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: AzureWebAppContainer@1
+      inputs:
+        appName: 'web-docker-app' # Replace with the name of your Azure Web App
+        imageName: 'abdocker.azurecr.io/material-app:$(Build.BuildId)'
+        multicontainerConfigFile: ''
+        containerCommand: ''
+        azureSubscription: 'web-docker-app' # Replace with the name of your Azure service connection
+      displayName: 'Deploy the app to Azure Web App'
