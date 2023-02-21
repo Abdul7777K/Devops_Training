@@ -1,0 +1,122 @@
+Angular application : 
+github-link : https://github.com/RavidAccion/Material-App.git
+
+Azure pipeline to buildAndPush angular-app to azure webapp service(code) & to buildAndPush azure webapp service(docker) & buildAndPush azure docker image to kubernetes
+
+trigger:
+- none
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+- stage: Build_Deploy_appService
+  jobs:
+  - job: Build
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - task: NodeTool@0
+        displayName: 'Install Node.js 16.x'
+        inputs:
+          versionSpec: '16.x'
+        
+
+      - script: |
+          npm install -g @angular/cli
+          npm install
+          ng build --configuration production 
+        displayName: 'npm install and build'
+        workingDirectory: '$(Build.SourcesDirectory)'
+
+      - task: Docker@2
+        displayName: Building_Docker_for_ACR
+        inputs:
+          containerRegistry: 'Abdul-container-registry'
+          repository: 'angular-app'
+          command: 'buildAndPush'
+          Dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
+          tags: | 
+            $(Build.BuildId)
+            latest 
+      - task: ArchiveFiles@2
+        displayName: 'Archive files'
+        inputs:
+          rootFolderOrFile:  '$(System.DefaultWorkingDirectory)/dist/first-material/'
+          includeRootFolder: false
+          archiveType: zip
+          archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+          replaceExistingArchive: true 
+            
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publishing_artifacts_for_webapp'
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+          ArtifactName: 'Angular-Artifacts'
+          publishLocation: 'Container' 
+
+- stage: Development
+  displayName: 'Dockerizing_process'
+  dependsOn: Build_Deploy_appService
+  condition: succeeded()
+  jobs:
+  - deployment: Deployment_to_ACR
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: Development
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - task: DownloadPipelineArtifact@2
+              displayName: 'Downloading artifacts for deployment'
+              inputs:
+                buildType: 'current'
+                artifactName: 'Angular-Artifacts'
+                targetPath:  '$(System.DefaultWorkingDirectory)'    
+      
+            - task: AzureRmWebAppDeployment@4
+              displayName: 'Deploying_to_web_app'
+              inputs:
+                ConnectionType: 'AzureRM'
+                azureSubscription: 'Abdul-SC-AngularDeploy'
+                appType: 'webAppLinux'
+                WebAppName: 'Abdul-appservice-QA'
+                packageForLinux: '$(Pipeline.Workspace)/Angular-Artifacts/*.zip'
+
+- stage: Deploy_Docker
+  dependsOn: Development
+  jobs:
+  - job: Deploy_webapp
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: AzureWebAppContainer@1
+      inputs:
+        appName: 'Abdul-webapp-docker' 
+        imageName: 'Abdulcontainer.azurecr.io/angular-app:$(Build.BuildId)'
+        multicontainerConfigFile: ''
+        containerCommand: ''
+        azureSubscription: 'Abdul-SC-AngularDeploy'
+      displayName: 'Deploy the app to Azure Web App'
+             
+             
+                 
+
+- stage: Deploy_kubernetes
+  dependsOn: Development
+  jobs:
+  - job: Deploy_kubernetes
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - task: KubernetesManifest@0
+        displayName: 'kubernetes_deployement'
+        inputs:
+          action: 'deploy'
+          kubernetesServiceConnection: 'Abdul-kubernetes'
+          namespace: 'default'
+          manifests: |
+             $(Build.SourcesDirectory)/kubrnetes-manifest.yml
+         
+

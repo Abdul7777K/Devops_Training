@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: material-app
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: material-app
+  template:
+    metadata:
+      labels:
+        app: material-app
+    spec:
+      containers:
+      - name: material-app
+        image: abdocker.azurecr.io/material-app:latest
+        ports:
+        - containerPort: 80
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: material-app
+spec:
+  type: LoadBalancer
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+  selector:
+    app: material-app
