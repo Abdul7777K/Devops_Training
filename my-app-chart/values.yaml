@@ -1,0 +1,4 @@
+replicaCount: 7
+image:
+  repository: abdocker.azurecr.io/material-app
+  tag: latest

@@ -1,0 +1,4 @@
+apiVersion: v2
+name: material-app
+description: A Helm chart for deploying the My App Angular app.
+version: 0.1.0
