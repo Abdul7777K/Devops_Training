@@ -1,0 +1,9 @@
+# QA variables
+
+variables:
+  - name: azureSubscriptionQA
+    value: WebApps-Service-Connection
+  - name: WebAppNameQA
+    value: QA-react-application
+  - name: appTypeQA
+    value: webAppLinux

@@ -1,0 +1,6 @@
+variables:
+  azureSubscriptionDev: WebApps-Service-Connection
+  WebAppNameDev: Dev-react-application
+  appTypeDev: webAppLinux
+
+# Dev

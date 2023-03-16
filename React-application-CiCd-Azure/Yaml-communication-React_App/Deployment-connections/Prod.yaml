@@ -1,0 +1,9 @@
+variables:
+  - name: azureSubscription
+    value: WebApps-Service-Connection
+  - name: WebAppNameProd
+    value: Prod-react-application
+  - name: appType
+    value: webAppLinux
+
+#Prod

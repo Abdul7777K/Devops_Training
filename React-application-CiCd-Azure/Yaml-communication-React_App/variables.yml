@@ -1,0 +1,8 @@
+variables:
+  ArtifactName: React-app
+  isDev: $[eq(variables['Build.SourceBranch'], 'refs/heads/Dev')]
+  isQA: $[eq(variables['Build.SourceBranch'], 'refs/heads/Qa')]
+  isPROD: $[eq(variables['Build.SourceBranch'], 'refs/heads/Prod')]
+  Devrefs: refs/heads/Dev
+  Qarefs: refs/heads/Qa
+  Prodrefs: refs/heads/Prod

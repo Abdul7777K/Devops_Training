@@ -1,0 +1,158 @@
+parameters:
+- name: image
+  displayName: Pool Image
+  type: string
+  default: ubuntu-latest
+  values:
+  - windows-latest
+  - ubuntu-latest
+  - macOS-latest
+- name: environment
+  displayName: Dev, Qa and Prod
+  type: string
+  default: Dev
+  values:
+    - Dev
+    - Qa
+    - Prod
+- name: HeadRefs
+  displayName: Dev, Qa and prod Refs
+  type: string
+  default: refs/heads/Dev
+  values:
+    - refs/heads/Dev
+    - refs/heads/Qa
+    - refs/heads/Prod
+
+variables:
+ - name: poolImage
+   value: ${{parameters.image}}
+ - name: environments
+   value: ${{parameters.environment}}
+ - template: variables.yml
+ - template: Deployment-connections/Dev.yml
+ - template: Deployment-connections/QA.yaml  
+resources:
+ repositories:
+   - repository: React-App
+     type: git
+     name: Abdul/React-App
+     ref: ${{parameters.HeadRefs}}
+     trigger:
+      branches:
+        include:
+          - Dev
+          - Qa
+          - Prod
+          
+trigger: none
+ 
+pool:
+  vmImage: $(poolImage)
+
+stages:
+  - stage: build
+    jobs:  
+      - template: Yaml-pipeline-react-app-build.yml
+
+  - stage: deploy
+    dependsOn: Build
+    jobs:
+    - job: deploy
+      pool:
+        vmImage: $(poolImage)
+      steps:
+      - task: DownloadBuildArtifacts@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: $(ArtifactName)
+          downloadPath: '$(System.ArtifactsDirectory)'
+
+      - task: AzureRmWebAppDeployment@4
+        displayName: deploy to Dev
+        inputs:
+          ConnectionType: 'AzureRM'
+          azureSubscription: 'WebApps-Service-Connection'
+          appType: 'webAppLinux'
+          WebAppName: 'Dev-react-application'
+          packageForLinux: '$(System.ArtifactsDirectory)/$(ArtifactName)/*.zip'
+          RuntimeStack: 'NODE|lts'
+          StartupCommand: 'pm2 serve /home/site/wwwroot --no-daemon --spa'
+        condition: |
+                and(
+                  succeeded(),
+                  or(
+                    eq(variables['isDev'], 'true'),
+                    eq(variables['environments'], 'Dev')
+                  )
+                )
+      
+      - task: AzureRmWebAppDeployment@4
+        displayName: deploy to QA
+        inputs:
+          ConnectionType: 'AzureRM'
+          azureSubscription: WebApps-Service-Connection
+          appType: 'webAppLinux'
+          WebAppName: $(WebAppNameQA)
+          packageForLinux: '$(System.ArtifactsDirectory)/$(ArtifactName)/*.zip'
+          RuntimeStack: 'NODE|lts'
+          StartupCommand: 'pm2 serve /home/site/wwwroot --no-daemon --spa'
+        condition: |
+              and(
+                succeeded(),
+                or(
+                  eq(variables['isQA'], 'true'),
+                  eq(variables['environments'], 'Qa')
+                )
+              )
+  - stage: deployProd
+    dependsOn: Build
+    condition: |
+              and(
+                succeeded(),
+                or(
+                  eq(variables['isPROD'], 'true'),
+                  eq(variables['environments'], 'Prod')
+                )
+              )
+    displayName: deploy to Prod
+    jobs:
+    - job: deploy
+      pool:
+        vmImage: $(poolImage)
+      steps:
+        - task: DownloadBuildArtifacts@1
+          inputs:
+            buildType: 'current'
+            downloadType: 'single'
+            artifactName: $(ArtifactName)
+            downloadPath: '$(System.ArtifactsDirectory)'
+        - task: AzureCLI@2
+          inputs:
+            azureSubscription: 'WebApps-Service-Connection'
+            scriptType: 'bash'
+            scriptLocation: 'inlineScript'
+            inlineScript: 'az webapp deployment slot create --name Prod-react-application --resource-group WebApps --slot staging'
+        
+        - task: AzureRmWebAppDeployment@4
+          inputs:
+            ConnectionType: 'AzureRM'
+            azureSubscription: 'WebApps-Service-Connection'
+            appType: 'webAppLinux'
+            WebAppName: 'Prod-react-application'
+            deployToSlotOrASE: true
+            ResourceGroupName: 'WebApps'
+            SlotName: 'staging'
+            packageForLinux: '$(System.ArtifactsDirectory)/$(ArtifactName)/*.zip'
+            RuntimeStack: 'NODE|lts'
+            StartupCommand: 'pm2 serve /home/site/wwwroot --no-daemon --spa'
+
+        - task: AzureAppServiceManage@0
+          inputs:
+            azureSubscription: 'WebApps-Service-Connection'
+            Action: 'Swap Slots'
+            WebAppName: $(WebAppNameProd)
+            ResourceGroupName: 'WebApps'
+            SourceSlot: 'staging'
+      
