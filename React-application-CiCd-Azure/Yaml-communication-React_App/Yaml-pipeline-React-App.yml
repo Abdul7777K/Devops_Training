@@ -10,19 +10,21 @@ parameters:
 - name: environment
   displayName: Dev, Qa and Prod
   type: string
-  default: Dev
+  default: none
   values:
     - Dev
     - Qa
     - Prod
+    - none
 - name: HeadRefs
   displayName: Dev, Qa and prod Refs
   type: string
-  default: refs/heads/Dev
+  default: none
   values:
     - refs/heads/Dev
     - refs/heads/Qa
     - refs/heads/Prod
+    - none
 
 variables:
  - name: poolImage
@@ -31,7 +33,9 @@ variables:
    value: ${{parameters.environment}}
  - template: variables.yml
  - template: Deployment-connections/Dev.yml
- - template: Deployment-connections/QA.yaml  
+ - template: Deployment-connections/QA.yaml
+ - template: Deployment-connections/Prod.yaml
+ 
 resources:
  repositories:
    - repository: React-App
@@ -41,10 +45,10 @@ resources:
      trigger:
       branches:
         include:
-          - Dev
+          #- Dev
           - Qa
           - Prod
-          
+
 trigger: none
  
 pool:
@@ -54,9 +58,13 @@ stages:
   - stage: build
     jobs:  
       - template: Yaml-pipeline-react-app-build.yml
-
-  - stage: deploy
+ 
+  - stage: deploytoDev
     dependsOn: Build
+    condition: and(succeeded(), or(
+        and(eq(variables['isDev'], 'true'), ne(variables['isQA'], 'true'), ne(variables['isPROD'], 'true')),
+        eq(variables['environments'], 'Dev')
+      ))
     jobs:
     - job: deploy
       pool:
@@ -79,14 +87,24 @@ stages:
           packageForLinux: '$(System.ArtifactsDirectory)/$(ArtifactName)/*.zip'
           RuntimeStack: 'NODE|lts'
           StartupCommand: 'pm2 serve /home/site/wwwroot --no-daemon --spa'
-        condition: |
-                and(
-                  succeeded(),
-                  or(
-                    eq(variables['isDev'], 'true'),
-                    eq(variables['environments'], 'Dev')
-                  )
-                )
+  
+  - stage: deploytoQA
+    dependsOn: Build
+    condition: and(succeeded(), or(
+        and(ne(variables['isDev'], 'true'), eq(variables['isQA'], 'true'), ne(variables['isPROD'], 'true')),
+        eq(variables['environments'], 'Qa')
+      )) 
+    jobs:
+    - job: deploy
+      pool:
+        vmImage: $(poolImage)
+      steps:
+      - task: DownloadBuildArtifacts@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: $(ArtifactName)
+          downloadPath: '$(System.ArtifactsDirectory)'      
       
       - task: AzureRmWebAppDeployment@4
         displayName: deploy to QA
@@ -98,24 +116,13 @@ stages:
           packageForLinux: '$(System.ArtifactsDirectory)/$(ArtifactName)/*.zip'
           RuntimeStack: 'NODE|lts'
           StartupCommand: 'pm2 serve /home/site/wwwroot --no-daemon --spa'
-        condition: |
-              and(
-                succeeded(),
-                or(
-                  eq(variables['isQA'], 'true'),
-                  eq(variables['environments'], 'Qa')
-                )
-              )
-  - stage: deployProd
+        
+  - stage: deploytoProd
     dependsOn: Build
-    condition: |
-              and(
-                succeeded(),
-                or(
-                  eq(variables['isPROD'], 'true'),
-                  eq(variables['environments'], 'Prod')
-                )
-              )
+    condition: and(succeeded(), or(
+        and(ne(variables['isDev'], 'true'), ne(variables['isQA'], 'true'), eq(variables['isPROD'], 'true')),
+        eq(variables['environments'], 'Prod')
+      ))
     displayName: deploy to Prod
     jobs:
     - job: deploy
@@ -140,7 +147,7 @@ stages:
             ConnectionType: 'AzureRM'
             azureSubscription: 'WebApps-Service-Connection'
             appType: 'webAppLinux'
-            WebAppName: 'Prod-react-application'
+            WebAppName: $(WebAppNameProd)
             deployToSlotOrASE: true
             ResourceGroupName: 'WebApps'
             SlotName: 'staging'
