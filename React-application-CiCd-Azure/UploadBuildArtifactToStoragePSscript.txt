@@ -1,0 +1,124 @@
+
+
+uploading build artifacts into azure storage account from yaml pipeline through ps script.
+
+Your best option here is to start from scratch:
+
+Go to 'C:\Users\MB\Documents\WindowsPowerShell\Modules\' and remove all folders starting with "Az"
+Launch PS as admin and update NuGet to latest version:
+
+Install-PackageProvider -Name NuGet -Force -Scope AllUsers
+In the same window install latest version of PackageProvider:
+
+Install-Module -Name PackageManagement -Scope AllUsers -Force -AllowClobber
+In the same window install latest version of PowerShellGet
+
+Install-Module -Name PowerShellGet -Scope AllUsers -Force -AllowClobber
+Install Azure
+
+Install-Module -Name Az -Scope CurrentUser -Force -Allowclobber
+
+
+
+ - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+          # install modules 
+          Install-PackageProvider -Name NuGet -Force -Scope AllUsers
+          Install-Module -Name PackageManagement -Scope AllUsers -Force -AllowClobber
+          Install-Module -Name PowerShellGet -Scope AllUsers -Force -AllowClobber
+          Install-Module -Name Az -Scope CurrentUser -Force -Allowclobber
+          powershell.exe $(System.DefaultWorkingDirectory)\artifactsinstoarge.ps1
+          Write-Host "Successfully Uploaded Artifact into storage account"
+		  
+		  
+		  
+artifactsinstoarge.ps1 --------------------------------------------------------------------->
+
+# Load Azure PowerShell module if not already loaded
+if (!(Get-Module -Name Az.Storage)) {
+    Import-Module -Name Az.Storage
+}
+# Set the Azure AD tenant and subscription ID
+$tenantId = "3e71393e-4c55-42a7-8787-cddc48ffe5ed"
+$subscriptionId = "c57bebcf-1810-4890-8f90-f88b6eff926d"
+
+# Set the service principal client ID and secret
+$clientId = "c15827f0-473c-4167-9147-e607daf21342"
+$clientSecret = "CyK8Q~4aQkZDTTO8rg1tlbgWamZIYBXR1WTsWaEG"
+
+# Authenticate to Azure using the service principal
+$securePassword = ConvertTo-SecureString $clientSecret -AsPlainText -Force
+$credential = New-Object System.Management.Automation.PSCredential($clientId, $securePassword)
+
+# Connect to Azure
+Connect-AzAccount -ServicePrincipal -Tenant $tenantId -Subscription $subscriptionId -Credential $credential
+
+# Set variables for Azure Blob Storage account
+$storageAccountName = "storageartifact"
+$containerName = "buildartifacts"
+$storageAccountKey = "o/rQ9WHsLlSMGJLBzFR01ELkpR/W18q35o8hWYcoGlXhEp90MJKokIw6+YreZXZhFY9YD980uAH/+AStdSigLg=="
+# Create context for Azure Blob Storage
+$context = New-AzStorageContext -StorageAccountName $storageAccountName -StorageAccountKey $storageAccountKey
+
+# Set the source folder
+$sourceFolder = "D:\a\1\a\"
+
+# Get the next file to upload from the source folder
+$sourceFiles = Get-ChildItem -Path $sourceFolder -Filter *.zip
+$nextFile = $sourceFiles[0]
+
+# Find the highest version number already in use in the destination folder
+$num = 0
+$destFiles = Get-AzStorageBlob -Container $containerName -Context $context
+foreach ($file in $destFiles) {
+    $name = $file.Name
+    $version = [int]($name -replace "^v(\d+)-.*$", '$1')
+    if ($version -gt $num) {
+        $num = $version
+    }
+}
+
+# Increment the highest version number by 1 for the new file
+$num++
+
+# Set the blob name with the prefix "vX-"
+$newName = "v$num-" + $nextFile.Name
+
+# Upload the new file to the Azure Blob Storage container
+Set-AzStorageBlobContent -File $nextFile.FullName -Container $containerName -Blob $newName -Context $context
+
+$version = 1
+$prefix = "v$version-"
+$pattern = "$prefix*"
+$found = $false
+
+# Check if there are exactly 5 files in the container
+if ((Get-AzStorageBlob -Container $containerName -Context $context).Count -le 5) {
+    Write-Host "Container does not contain exactly 5 files."
+    break
+}
+
+do {
+    $blobs = Get-AzStorageBlob -Container $containerName -Prefix $prefix -Context $context
+
+    if ($blobs.Count -gt 0) {
+        # Delete the blobs with the matching prefix
+        $blobs | Remove-AzStorageBlob -Force
+        $found = $true
+    } else {
+        # If no blobs were found, increment the version number and try again
+        $version++
+        $prefix = "v$version-"
+        $pattern = "$prefix*"
+    }
+
+} while (!$found)
+
+if ($found) {
+    Write-Host "Blobs with prefix '$prefix' were found and deleted."
+} else {
+    Write-Host "No blobs with prefixes."
+}
+
