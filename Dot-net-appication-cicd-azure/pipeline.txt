@@ -1,0 +1,89 @@
+variables:
+   - template: vars/vars-in-app.yaml
+
+trigger:
+ batch: true
+ branches:
+   include:
+     - none
+
+pool:
+  vmImage: 'windows-latest'
+
+
+stages:
+- stage: build
+ # condition: eq(variables.ismaster, 'True')
+  displayName: Installing Sdk
+  jobs:
+    - job: installSdkandBuildArtifact
+      steps:
+        - task: UseDotNet@2
+          inputs:
+            packageType: 'sdk'
+            version: '6.x'
+          displayName:  Installing Sdk version 6.x
+        - task: DotNetCoreCLI@2
+          inputs:
+            command: 'restore'
+            projects: $(pro)
+          displayName: 'Restore dependencies'
+        
+        - task: DotNetCoreCLI@2
+          inputs:
+            command: 'build'
+            projects: $(pro)
+            arguments: '--configuration $(buildConfiguration)'
+          displayName: 'Build the application' 
+        
+        - task: DotNetCoreCLI@2
+          inputs:
+            command: 'publish'
+            projects: $(pro)
+            publishWebProjects: true
+            arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+          displayName: 'Publish the artifact'
+        - task: PublishBuildArtifacts@1
+          inputs:
+            PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+            ArtifactName: '$(artifactName)'
+            publishLocation: 'Container' 
+
+- stage: 
+  dependsOn: build
+  condition: false
+  displayName: This step will deploy above build artifact into web app
+  jobs:
+    - job: deploy
+      steps:
+        - task: DownloadPipelineArtifact@2
+          inputs:
+            buildType: 'current'
+            artifactName: '$(artifactName)'
+            targetPath: '$(Pipeline.Workspace)'
+        - task: AzureRmWebAppDeployment@4
+          inputs:
+            ConnectionType: 'AzureRM'
+            azureSubscription: 'Free Trial(c1bf70cd-4b03-4a23-9373-f20a3fb23b32)'
+            appType: 'webAppLinux'
+            WebAppName: 'dotnetdb'
+            packageForLinux: '$(Pipeline.Workspace)/*.zip'
+            RuntimeStack: 'DOTNETCORE|6.0'
+            StartupCommand: 'dotnet sqlapp.dll'
+          
+- stage: 
+  dependsOn: build
+  displayName: This step will the dockerization of dotnet application
+  jobs:
+    - job: dockerize
+      steps:
+        
+        - task: Docker@2
+          inputs:
+            containerRegistry: 'docker-service-connection'
+            repository: 'abdocker'
+            command: 'buildAndPush'
+            Dockerfile: '$(System.DefaultWorkingDirectory)/Dockerfile'
+            tags: |
+               latest
+               $(Build.BuildId)
