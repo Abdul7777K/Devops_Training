@@ -1,0 +1,55 @@
+parameters:
+  - name: versionsdk
+    default: '6.0.x'
+  - name: projectssln
+    type: string
+    default: '**/*.sln'
+  - name: ArtifactName
+    type: string
+    default: dot-net-app
+  - name: build
+    type: string
+    default: 'build'
+  - name: Restore
+    type: string
+    default: 'restore'
+  - name: Publish
+    type: string
+    default: 'publish'
+
+jobs:
+  - job: build
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+      - checkout: dotnetapp
+      - task: UseDotNet@2
+        inputs:
+          packageType: 'sdk'
+          version: ${{parameters.versionsdk}}
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: ${{parameters.Restore}}
+          projects: ${{parameters.projectssln}}
+        displayName: 'Restore Nuget Packages'
+
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: ${{parameters.build}}
+          projects: ${{parameters.projectssln}}
+          arguments: '--no-restore'
+        displayName: 'Build projects'
+      
+      - task: DotNetCoreCLI@2
+        inputs:
+          command:  ${{parameters.Publish}}
+          projects: ${{parameters.projectssln}}
+          publishWebProjects: true
+          arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+        displayName: 'Publish the artifact'
+ 
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: '${{parameters.ArtifactName}}'
+          publishLocation: 'Container' 

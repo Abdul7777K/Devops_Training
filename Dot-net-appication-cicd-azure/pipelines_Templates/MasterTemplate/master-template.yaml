@@ -1,0 +1,40 @@
+parameters:
+    - name: environment
+      type: string
+      default: master
+      values:
+          - master
+          - qa
+          - prod
+    - name: reference
+      default: refs/heads/master
+      type: string
+      values:
+          - refs/heads/master
+          - refs/heads/qa
+          - refs/heads/prod
+
+resources:
+ repositories:
+   - repository: dotnetapp
+     type: git
+     name: Abdul/dotnetapp
+     ref: ${{parameters.reference}}
+
+trigger: none
+
+pool:
+  vmImage: 'windows-latest'
+
+stages:
+- stage: build
+  displayName: build application
+  jobs:
+    - template: ../build-template.yaml
+      parameters:
+        versionsdk: $(versionsdk)
+        ArtifactName: $(ArtifactName)
+        projectssln: $(projectssln)
+        build: $(build)
+        Publish: $(publish)
+        Restore: $(restore)
