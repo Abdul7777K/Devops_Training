@@ -1,0 +1,25 @@
+parameters:
+  - name: AzureSubscription
+    default: 'dotnet-service-connection'
+  - name: WebAppNameProd
+    type: string
+    default: 'prod-dotnet-app'
+  - name: ArtifactName
+    default: dot-net-app
+
+jobs:
+ - job: deployProd
+   steps:
+     - task: DownloadBuildArtifacts@1
+       inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: ${{parameters.ArtifactName}}
+        downloadPath: '$(System.ArtifactsDirectory)'
+     - task: AzureRmWebAppDeployment@4
+       inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: ${{parameters.AzureSubscription}}
+        appType: 'webApp'
+        WebAppName: ${{parameters.WebAppNameProd}}
+        packageForLinux: '$(System.ArtifactsDirectory)/${{parameters.ArtifactName}}/*.zip'
