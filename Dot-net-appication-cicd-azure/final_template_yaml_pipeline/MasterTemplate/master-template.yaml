@@ -82,5 +82,3 @@ stages:
       ArtifactName: ${{parameters.Artifactname}}
       AzureSubscription: $(AzureSubscription)
       WebAppNameProd: $(WebAppNameProd)
-      
-
