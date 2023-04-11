@@ -1,0 +1,1 @@
+"server=sqlserverindia7.database.windows.net;user=adminsql;password=Azure@123; Database=EshopDatabase;Trusted_Connection=False; TrustServerCertificate=False;"
