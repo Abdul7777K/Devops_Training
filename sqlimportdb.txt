@@ -1,0 +1,9 @@
+SqlPackage.exe /a:import /sf:"D:\EshopDatabase.bacpac" /tsn:"database-1.cio2jismmkpc.us-east-1.rds.amazonaws.com" /tdn:EshopDatabase1 /tu:admin /tp:chinnA424 /p:CommandTimeout=1200 /TargetEncryptConnection:False
+
+
+sqlpackage /a:Import /sf:"D:\pursthomproject\EshopDatabase.bacpac" /tsn:"database-1.cio2jismmkpc.us-east-1.rds.amazonaws.com" /tdn:EshopDatabase /tu:admin /tp:chinnA424
+
+/a:Import /sf:"D:\EshopDatabase.bacpac" /tsn:"database-1.cio2jismmkpc.us-east-1.rds.amazonaws.com" /tdn:EshopDatabase1 /tu:admin /tp:chinnA424
+
+
+SqlPackage.exe /a:import /sf:J:\MSSQL_BACKUP\UATbackup.bacpac /tsn:localhost /tdn:AXDB_UAT /p:CommandTimeout=1200 /TargetEncryptConnection:False
