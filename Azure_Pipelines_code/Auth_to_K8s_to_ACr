@@ -1,5 +1,12 @@
 Auth to K8s to ACr
 
+Code -build- Docker Image -push- Container Registry -pull- Docker Image -From- Container Registry -to- K8s
+
+for this need 
+1. Service connection from Azure devops to Container Registry
+2. Service connection from Azure devops to K8s
+3. Authenticate with Azure Container Registry from Azure Kubernetes Service link : https://learn.microsoft.com/en-us/azure/aks/cluster-container-registry-integration?tabs=azure-cli
+
 
 #login to Azure
 az login
