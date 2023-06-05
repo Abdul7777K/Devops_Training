@@ -1,0 +1,22 @@
+Auth to K8s to ACr
+
+
+#login to Azure
+az login
+ 
+# Set variables
+acrname=myacr07
+rgname=aksdemo
+aksclustername=aksdemo
+ 
+# Create ACR instance
+az acr create -n $acrname -g $rgname --sku basic
+ 
+# Create an AKS cluster with ACR integration
+az aks create -n $aksclustername -g rgname --generate-ssh-keys --attach-acr acrname
+  
+#If ACR is in the same subscription then use above format otherwise you need to use this format
+az aks create -n $aksclustername -g $rgname --generate-ssh-keys --attach-acr /subscriptions/<subscription-id>/resourceGroups/myContainerRegistryResourceGroup/providers/Microsoft.ContainerRegistry/registries/<containerRegistryName>
+ 
+#What if ACR is already created and now you want to do the integration then use this command
+az aks update -n k8s -g $rgname --attach-acr $acrname
