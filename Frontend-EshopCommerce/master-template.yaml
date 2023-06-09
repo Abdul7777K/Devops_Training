@@ -1,0 +1,85 @@
+parameters:
+    - name: environment
+      default: master
+      values:
+        - master
+        - QA
+    - name: reference
+      default: refs/heads/master
+      type: string
+      values:
+          - refs/heads/master
+          - refs/heads/QA
+    - name: Artifactname
+      type: string
+      default: Dev-Artifact
+      values:
+        - Dev-Artifact
+        - QA-Artifact
+
+variables:
+ - name: environments
+   value: ${{parameters.environment}}
+
+resources:
+  repositories:
+    - repository: syncgitEshopCommerce
+      type: git
+      name: Abdul/syncgitEshopCommerce
+      ref: ${{parameters.reference}}
+      trigger:
+        branches:
+          include:
+            - master
+            - QA
+            - Release/*
+        paths:
+          include:
+            - Angular_Projects/EshopApp
+  pipelines:
+  - pipeline: mysourcePipeline # any arbitrary name
+    source: 'Backend-EShopCommerce - Source'    # name of the pipeline shown on azure UI portal
+    trigger:
+      branches:
+        include:
+          - master
+pr:
+ branches:
+   include:
+     - QA   # destination branches
+
+trigger: none
+
+pool:
+  vmImage: 'windows-latest'
+
+stages:
+- stage: build
+  displayName: build application
+  jobs:
+   - template: build.yaml
+     parameters:
+        ArtifactName: ${{parameters.Artifactname}}
+        NodeToolVersion: $(NodeToolVersion)
+      
+- stage: DeployToDev
+  displayName: Deploying to dev 
+  dependsOn: build
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+  jobs: 
+  - template: Dev-deploy-template.yaml
+    parameters:
+      ArtifactName: ${{parameters.Artifactname}}
+      AzureSubscription: $(AzureSubscription)
+      WebAppName: $(WebAppName)
+
+- stage: DeployToQA
+  displayName: Deploying to QA 
+  dependsOn: build
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/QA')
+  jobs: 
+  - template: QA-deploy-template.yaml
+    parameters:
+      ArtifactName: ${{parameters.Artifactname}}
+      AzureSubscription: $(AzureSubscription2)
+      WebAppName: $(WebAppNameQA)

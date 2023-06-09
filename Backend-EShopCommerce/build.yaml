@@ -1,0 +1,84 @@
+parameters:
+  - name: versionsdk
+    default: '6.0.x'
+  - name: projectssln
+    type: string
+    default: '**/*.sln'
+  - name: build
+    type: string
+    default: 'build'
+  - name: Restore
+    type: string
+    default: 'restore'
+  - name: Publish
+    type: string
+    default: 'publish'
+  - name: ArtifactName
+    default: dot-net-app
+
+jobs:
+  - job: build
+    pool:
+      vmImage: 'windows-latest'
+      #Build
+    steps:
+      - checkout: syncgitEshopCommerce
+
+      - task: AzureKeyVault@2
+        inputs:
+          azureSubscription: 'sql-connection-key-valut'
+          KeyVaultName: 'sqlkeyvault9'
+          SecretsFilter: 'connection--String--Sql--backend'
+          RunAsPreJob: true
+      - task: CmdLine@2
+        inputs:
+          script: 'echo $(connection--String--Sql--backend) > connection--String--Sql--backend.txt'
+
+      - task: CopyFiles@2
+        inputs:
+          Contents: connection--String--Sql--backend.txt
+          targetFolder: '$(Build.ArtifactStagingDirectory)'
+
+      - task: PowerShell@2
+        inputs:
+          targetType: 'inline'
+          script: |
+            # Write your PowerShell commands here.
+            powershell.exe D:\a\1\s\HomeMove.ps1
+            powershell.exe D:\a\1\s\Angular_DotNET_Projects\ScriptsPS\CopyScriptPStoWorkingDir.ps1
+            powershell.exe D:\a\1\s\ScriptsPS\MoveFilesToPWD.ps1
+            ls
+            powershell.exe D:\a\1\s\ScriptsPS\ReplaceFileContentProgramcs.ps1
+            powershell.exe D:\a\1\s\ScriptsPS\ReplaceFileContentAppsettingsjson.ps1
+            powershell.exe D:\a\1\s\ScriptsPS\AzureKeyVaultSecret.ps1
+
+      - task: UseDotNet@2
+        inputs:
+          packageType: 'sdk'
+          version: ${{parameters.versionsdk}}
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: ${{parameters.Restore}}
+          projects: ${{parameters.projectssln}}
+        displayName: 'Restore Nuget Packages'
+
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: ${{parameters.build}}
+          projects: ${{parameters.projectssln}}
+          arguments: '--no-restore'
+        displayName: 'Build projects'
+      
+      - task: DotNetCoreCLI@2
+        inputs:
+          command:  ${{parameters.Publish}}
+          projects: ${{parameters.projectssln}}
+          publishWebProjects: true
+          arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+        displayName: 'Publish the artifact'
+ 
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: ${{parameters.ArtifactName}}
+          publishLocation: 'Container' 

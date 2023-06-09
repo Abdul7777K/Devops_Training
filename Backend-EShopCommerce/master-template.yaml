@@ -1,0 +1,68 @@
+parameters:
+    - name: master
+      type: boolean
+      default: true
+
+    - name: reference
+      default: refs/heads/master
+      type: string
+      values:
+          - refs/heads/master
+
+    - name: Artifactname
+      type: string
+      default: Dev-Artifact
+      values:
+        - Dev-Artifact
+
+variables:
+ - name: isDev
+   value: $[eq(variables['Build.SourceBranch'], 'master')]
+
+resources:
+ repositories:
+   - repository: syncgitEshopCommerce
+     type: git
+     name: Abdul/syncgitEshopCommerce
+     ref: refs/heads/master
+     trigger:
+      branches:
+        include:
+          - master
+
+      paths:
+        include:
+          - DotNET_Projects/EshopApplication
+
+trigger: none
+
+pool:
+  vmImage: 'windows-latest'
+
+stages:
+- stage: build
+  displayName: build application
+  jobs:
+    - template: build.yaml
+      parameters:
+        versionsdk: $(versionsdk)
+        ArtifactName: ${{parameters.Artifactname}}
+        projectssln: $(projectssln)
+        build: $(build)
+        Publish: $(publish)
+        Restore: $(restore)
+
+- stage: DeployToDev
+  displayName: Deploying to dev 
+  dependsOn: build
+  condition: and(succeeded(), or(
+        eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+        eq('${{ parameters.master }}', true)
+      ))
+  jobs: 
+  - template: Dev-deploy-template.yaml
+    parameters:
+      ArtifactName: ${{parameters.Artifactname}}
+      AzureSubscription: $(AzureSubscription)
+      WebAppName: $(WebAppName)
+      
