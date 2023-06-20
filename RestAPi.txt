@@ -1,0 +1,19 @@
+$PAT = "cosyixhwol236kluzj2eyki62kvamotbjifz2iehlp4qf6lzxlqq"
+$encoded = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes(":$($PAT)"))
+$repoBody = @{
+    name = "Nexia"
+} | ConvertTo-Json
+$projUrl = "https://dev.azure.com/17691A05H7/17691A05H7/_apis/git/repositories?api-version=5.0"
+
+$create = Invoke-WebRequest -method Post -Headers @{Authorization = "Basic $encoded"} -body $repoBody -Uri $projUrl -ContentType "application/json" -UseBasicParsing
+
+
+$remoteUrl = Get-Content -Raw D:\AzureDEV.txt | ConvertFrom-Json 
+
+
+cd D:\TerraFormDDI
+git init
+git add .
+git commit -m "Code pushed"
+git remote add origin $remoteUrl.remoteUrl
+git push -u origin --all
