@@ -1,3 +1,9 @@
+$username = "17691a05h7@mits.ac.in"
+$password="Abdul.1998"
+$SecurePassword = ConvertTo-SecureString "$password" -AsPlainText -Force
+$credentials = New-Object System.Management.Automation.PSCredential($username, $SecurePassword)
+Login-AzAccount -Credential $credentials
+
 $PAT = "cosyixhwol236kluzj2eyki62kvamotbjifz2iehlp4qf6lzxlqq"
 $encoded = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes(":$($PAT)"))
 $repoBody = @{
