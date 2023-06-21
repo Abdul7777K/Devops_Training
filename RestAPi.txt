@@ -23,3 +23,54 @@ git add .
 git commit -m "Code pushed"
 git remote add origin $remoteUrl.remoteUrl
 git push -u origin --all
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+...............................................................................
+
+
+$PAT = "55k5ma6v4ikbuip35yqh632xhvk25he5ewqdkzlfuj3ne3avbcuq"
+$encoded = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes(":$($PAT)"))
+$repoBody = @{
+    name = "Nexia1"
+} | ConvertTo-Json
+$projUrl = "https://dev.azure.com/17691A05H7/17691A05H7/_apis/git/repositories?api-version=5.0"
+
+$createRepo = Invoke-WebRequest -method Post -Headers @{Authorization = "Basic $encoded"} -body $repoBody -Uri $projUrl -ContentType "application/json" -UseBasicParsing
+
+
+$uri = "https://dev.azure.com/17691A05H7/17691A05H7/_apis/pipelines?api-version=6.0-preview.1"
+$body = '{
+    "folder": null,
+    "name": "Nexia-Pipeline",
+    "configuration": {
+        "type": "yaml",
+        "path": "my-pipeline.yml",
+        "repository": {
+            "id": "8069eef9-68e2-41b1-b5cd-92019ba2d378",
+            "name": "Nexia1",
+            "type": "azureReposGit"
+        }
+    }
+}'
+
+$createPipeline=Invoke-WebRequest -method Post -Headers @{Authorization = "Basic $encoded"} -body $body -Uri $uri -ContentType "application/json" -UseBasicParsing
