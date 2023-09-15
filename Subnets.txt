@@ -1,4 +1,4 @@
-[142.250.196.14]
+
 172.16.12.187
 0    0  0  0 0 0 0 0 . 0    0  0  0 0 0 0 0  . 0   0  0  0  0 0 0 0  . 0   0  0  0  0 0 0 0
 128.64.32.16.8.4.2.1 . 128.64.32.16.8.4.2.1  . 128.64.32.16.8.4.2.1  . 128.64.32.16.8.4.2.1    [Bytes]
@@ -7,7 +7,8 @@
 255.                   255.                   255.                     255     [SubnetMasks]
 
 
-10001110.11111010.11000100.00001110
+10001110.11111010.11000100.00001110 - IPv4 address represented in binary notation
+[142.250.196.14] - decimal (dotted-decimal) form.
 .........................................................................
 ...3 digit...
 
@@ -69,3 +70,8 @@ Class C	192.0.0.0 to 223.255.255.0	 192.168.0.0 to 192.168.255.255     255.255.2
 2^(32-21) = 2^(11) = 2048 ip's for cidr 21.
 
 to get subnet mask refer final-below part. add from bottom to top.
+
+NAT - Client -> Private Ip to Route [it converts private Ip to public] to Server [like youtube or any website] to Route [ public Ip to Private Ip] to -> Client
+
+FireWall - Restrict the internet Traffic Vnet level.
+Nsg - Restrict the internet Traffic Subnet level/Interface level.
