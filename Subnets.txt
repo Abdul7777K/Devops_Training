@@ -73,5 +73,11 @@ to get subnet mask refer final-below part. add from bottom to top.
 
 NAT - Client -> Private Ip to Route [it converts private Ip to public] to Server [like youtube or any website] to Route [ public Ip to Private Ip] to -> Client
 
+Client -> Private Ip to Route [it converts private Ip to public] to Server [like youtube or any website] - this process is Snat.
+Server [like youtube or any website] to Route [ public Ip to Private Ip] to -> Client - This process is Dnat
+
+
+
+
 FireWall - Restrict the internet Traffic Vnet level.
 Nsg - Restrict the internet Traffic Subnet level/Interface level.
