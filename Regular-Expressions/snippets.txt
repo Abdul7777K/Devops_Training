@@ -28,3 +28,15 @@ Quantifiers:
 #### Sample Regexs ####
 
 [a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+
+
+Regex lookahead, lookbehind and atomic groups
+
+Given the string foobarbarfoo:
+
+bar(?=bar)     finds the 1st bar ("bar" which has "bar" after it)
+bar(?!bar)     finds the 2nd bar ("bar" which does not have "bar" after it)
+(?<=foo)bar    finds the 1st bar ("bar" which has "foo" before it)
+(?<!foo)bar    finds the 2nd bar ("bar" which does not have "foo" before it)
+
+You can also combine them:
+(?<=foo)bar(?=bar)    finds the 1st bar ("bar" with "foo" before it and "bar" after it.
