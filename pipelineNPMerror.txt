@@ -1,0 +1,1 @@
+https://stackoverflow.com/questions/75542305/in-my-react-js-project-whenever-i-try-to-do-npm-install-i-get-errors-only-when
