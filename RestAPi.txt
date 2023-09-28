@@ -1,3 +1,10 @@
+#get stage or job wise status rest api
+#https://jsonformatter.curiousconcept.com/#  for json viewer
+https://stackoverflow.com/questions/59628501/get-the-current-running-build-final-stage-results-at-the-end-of-the-pipeline-as
+
+
+
+
 $username = "17691a05h7@mits.ac.in"
 $password="Abdul.1998"
 $SecurePassword = ConvertTo-SecureString "$password" -AsPlainText -Force
