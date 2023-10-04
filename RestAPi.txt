@@ -1,6 +1,7 @@
 #get stage or job wise status rest api
 #https://jsonformatter.curiousconcept.com/#  for json viewer
 https://stackoverflow.com/questions/59628501/get-the-current-running-build-final-stage-results-at-the-end-of-the-pipeline-as
+http://www.bryancook.net/2022/01/invoking-azure-devops-hidden-rest-api.html
 
 
 
