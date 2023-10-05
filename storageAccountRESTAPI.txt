@@ -1,0 +1,26 @@
+$StorageAccountName = "storageaccount880"
+$ContainerName = "loggy7"
+
+$dateTime = Get-Date
+$formattedDateTime = $dateTime.ToUniversalTime().ToString("ddd, dd MMM yyyy HH:mm:ss 'GMT'")
+$CanonicalizedHeaders = "x-ms-date:$formattedDateTime`nx-ms-version:2019-12-12"
+$CanonicalizedResource = "/$StorageAccountName/$ContainerName`ncomp:list`nrestype:container"
+
+
+
+$StringToSign = "GET" +"`n"+"`n"+"`n"+"`n"+"`n"+"`n"+"`n"+"`n"+"`n"+"`n"+"`n"+"`n" + "$CanonicalizedHeaders"+ "`n" + $CanonicalizedResource
+
+$privateKey = "zJ/MzrPAMRCWaZttPT8xgHSIlA0w19JrIDxmxMR4uDWmO27HQ23g5k96f9XweMVXUacK2NMtvAsd+AStOSQFdQ=="
+
+$signature = "SharedKey $($StorageAccountName):" + [Convert]::ToBase64String([System.Security.Cryptography.HMACSHA256]::new([Convert]::FromBase64String($privateKey)).ComputeHash([System.Text.Encoding]::UTF8.GetBytes($StringToSign)))
+
+$headers = @{
+    "x-ms-date" = $formattedDateTime
+    "x-ms-version" = "2019-12-12"
+    "Authorization" = $signature
+
+}
+
+$uri = "https://storageaccount880.blob.core.windows.net/loggy7?restype=container&comp=list"
+
+Invoke-RestMethod -Uri $uri -Method "GET" -Headers $headers
