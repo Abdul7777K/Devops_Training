@@ -1,9 +1,13 @@
+#Put GEt Delete Head Patch all working with below code
+
+#GET method
+
 $StorageAccountName = "storageaccount880"
-$ContainerName = "loggy7"
+$ContainerName = "loggy9"
 
 $dateTime = Get-Date
 $formattedDateTime = $dateTime.ToUniversalTime().ToString("ddd, dd MMM yyyy HH:mm:ss 'GMT'")
-$CanonicalizedHeaders = "x-ms-date:$formattedDateTime`nx-ms-version:2019-12-12"
+$CanonicalizedHeaders = "x-ms-date:$formattedDateTime`nx-ms-version:2015-02-21"
 $CanonicalizedResource = "/$StorageAccountName/$ContainerName`ncomp:list`nrestype:container"
 
 
@@ -16,11 +20,22 @@ $signature = "SharedKey $($StorageAccountName):" + [Convert]::ToBase64String([Sy
 
 $headers = @{
     "x-ms-date" = $formattedDateTime
-    "x-ms-version" = "2019-12-12"
+    "x-ms-version" = "2015-02-21"
     "Authorization" = $signature
 
 }
 
-$uri = "https://storageaccount880.blob.core.windows.net/loggy7?restype=container&comp=list"
+$uri = "https://storageaccount880.blob.core.windows.net/loggy9?restype=container&comp=list"
 
 Invoke-RestMethod -Uri $uri -Method "GET" -Headers $headers
+
+
+
+#for PostMan Headers
+$Date = "x-ms-date:" + $formattedDateTime
+$Version = "x-ms-version:" + "2015-02-21"
+$Authorization ="Authorization:" + $signature
+
+$Date
+$Version
+$Authorization
