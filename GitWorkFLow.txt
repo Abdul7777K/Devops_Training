@@ -1,0 +1,223 @@
+
+git workflow
+
+
+*****************-----------------------------------------------***************************
+
+
+git init -----> .git Folder Initialized
+
+.git ---> refs ----> heads -----> [BranchNames] Note: BranchNames Exists when there is commit and it holds latest commit
+          HEAD ----> it holds current working branch EX: ref: refs/heads/Animals
+		  
+		  
+BranchNames
+-----------		  
+		 
+Animals --> 72d631 - (HEAD -> Animals)
+        --> Commit message (1)
+		
+.git ---> refs ----> heads -----> Animals {72d631} Note: BranchNames Exists when there is commit it holds latest commit
+          HEAD ----> it holds current working branch EX: ref: refs/heads/Animals
+		  
+		  
+Create new branch called lions
+so intial logs --> 72d631 - (HEAD ->lions, Animals)
+               --> Commit message (1)
+
+.git ---> refs ----> heads -----> Animals {72d631} Note: BranchNames Exists when there is commit it holds latest commit
+                           -----> lions {}
+          HEAD ----> it holds current working branch EX: ref: refs/heads/lions
+		  
+Create a new file called Barbary_lion.txt in barnch lions
+[touch Barbary_lion.txt]
+
+              --> 9cbfdb - (HEAD -> lions) -- latest commit
+			  --> Commit message (l1)
+			  --> 72d631 - (Animals)
+			  --> Commit message (1)
+			  
+			  
+.git ---> refs ----> heads -----> Animals {72d631} Note: BranchNames Exists when there is commit it holds latest commit
+                           -----> lions {9cbfdb}
+          HEAD ----> it holds current working branch EX: ref: refs/heads/lions
+		  
+		  
+			  
+Open Barbary_lion.txt add few lines and save and commit the file
+
+			  --> bcc442 - (HEAD -> lions) -- latest commit 
+			  -- Commit message (l2)
+              --> 9cbfdb 
+			  -- Commit message (l1)
+			  --> 72d631 - (Animals)
+			  -- Commit message (1)
+			  
+			  
+.git ---> refs ----> heads -----> Animals {72d631} Note: BranchNames Exists when there is commit it holds latest commit
+                           -----> lions {bcc442}
+          HEAD ----> it holds current working branch EX: ref: refs/heads/lions
+			  
+Open Barbary_lion.txt add few lines and save and commit the file
+    
+	          --> 45df445 - (HEAD -> lions) -- latest commit 
+              --  Commit message (l3)
+			  --> bcc442 
+			  -- Commit message (l2)
+              --> 9cbfdb 
+			  -- Commit message (l1)
+			  --> 72d631 - (Animals)
+			  -- Commit message (1)
+			  
+.git ---> refs ----> heads -----> Animals {72d631} Note: BranchNames Exists when there is commit it holds latest commit
+                           -----> lions {45df445}
+          HEAD ----> it holds current working branch EX: ref: refs/heads/lions
+		  
+		  
+Create a new branch from lion called Asiaticlions
+[git switch -c Asiaticlions]
+
+so intial logs--> 45df445 - (HEAD ->Asiaticlions, lions)
+              --  Commit message (l3)
+			  --> bcc442 
+			  -- Commit message (l2)
+              --> 9cbfdb 
+			  -- Commit message (l1)
+			  --> 72d631 - (Animals)
+			  -- Commit message (1)
+
+.git ---> refs ----> heads -----> Animals {72d631} Note: BranchNames Exists when there is commit it holds latest commit
+                           -----> lions {45df445}
+						   -----> Asiaticlions {}
+          HEAD ----> it holds current working branch EX: ref: refs/heads/Asiaticlions
+
+Create a new file called Asiatic_lion.txt in barnch lions
+[touch Asiatic_lion.txt]
+
+              -->6254913 (HEAD ->Asiaticlions)
+			  --  Commit message (As1)
+			  --> 45df445 - (lions)
+              --  Commit message (l3)
+			  --> bcc442 
+			  -- Commit message (l2)
+              --> 9cbfdb 
+			  -- Commit message (l1)
+			  --> 72d631 - (Animals)
+			  -- Commit message (1)
+			  
+.git ---> refs ----> heads -----> Animals {72d631} Note: BranchNames Exists when there is commit it holds latest commit
+                           -----> lions {45df445}
+						   -----> Asiaticlions {6254913}
+		  HEAD ----> it holds current working branch EX: ref: refs/heads/Asiaticlions
+			  
+the concept repeats ....... so on.........
+
+
+now, switch back to lions branch
+[git switch lions]
+
+so intial logs--> 45df445 - (HEAD -> lions) -- latest commit 
+              --  Commit message (l3)
+			  --> bcc442 
+			  -- Commit message (l2)
+              --> 9cbfdb 
+			  -- Commit message (l1)
+			  --> 72d631 - (Animals)
+			  -- Commit message (1)
+			  
+.git ---> refs ----> heads -----> Animals {72d631} Note: BranchNames Exists when there is commit it holds latest commit
+                           -----> lions {45df445}
+						   -----> Asiaticlions {6254913}
+		  HEAD ----> it holds current working branch EX: ref: refs/heads/lions			   
+
+Open Barbary_lion.txt add few lines and save and commit the file
+
+              --> a879656 - (HEAD -> lions) -- latest commit
+			  --  Commit message (l4)
+			  --> 45df445 
+              --  Commit message (l3)
+			  --> bcc442 
+			  -- Commit message (l2)
+              --> 9cbfdb 
+			  -- Commit message (l1)
+			  --> 72d631 - (Animals)
+			  -- Commit message (1)
+			  
+.git ---> refs ----> heads -----> Animals {72d631} Note: BranchNames Exists when there is commit it holds latest commit
+                           -----> lions {a879656}
+						   -----> Asiaticlions {6254913}
+		  HEAD ----> it holds current working branch EX: ref: refs/heads/lions
+		  
+
+now merge the lion branch into Animals branch so, switch back to Animals branch and execute below commit
+[git switch Animals]
+[git merge lions]
+
+so intial logs --> 72d6311 (HEAD -> Animals) 
+               -- commit (1)
+			   
+after merging lions branch into animals branch
+
+
+              --> a879656 - (HEAD ->Animals, lions) -- latest commit
+			  --  Commit message (l4)
+			  --> 45df445 
+              --  Commit message (l3)
+			  --> bcc442 
+			  -- Commit message (l2)
+              --> 9cbfdb 
+			  -- Commit message (l1)
+			  --> 72d631 - (Animals)
+			  -- Commit message (1)   
+		
+.git ---> refs ----> heads -----> Animals {a879656} Note: BranchNames Exists when there is commit it holds latest commit
+                           -----> lions {a879656}
+						   -----> Asiaticlions {6254913}
+		  HEAD ----> it holds current working branch EX: ref: refs/heads/Animals
+		  
+	
+Note : this fastforward merge. because we didnt created any new commit after we create new branch called lions
+
+
+now merge the Asiaticlions branch into Animals branch so, switch back to Animals branch and execute below commit
+[git switch Animals]
+[git merge Asiaticlions]
+
+so inital logs--> a879656 - (HEAD ->Animals, lions) -- latest commit
+			  --  Commit message (l4)
+			  --> 45df445 
+              --  Commit message (l3)
+			  --> bcc442 
+			  -- Commit message (l2)
+              --> 9cbfdb 
+			  -- Commit message (l1)
+			  --> 72d631 - (Animals)
+			  -- Commit message (1) 
+			  
+now, after merging
+
+              
+			  --> c33e267 (HEAD -> Animals)
+			  -- Commit message  (Merge branch 'Asiaticlions' into Animals)
+			  -- a879656 (lions) 
+			  -- Commit message (l4)
+			  --> 6254913 (Asiaticlions) 
+			  -- Commit message (As1)
+			  --> 45df445 
+              --  Commit message (l3)
+			  --> bcc442 
+			  -- Commit message (l2)
+              --> 9cbfdb 
+			  -- Commit message (l1)
+			  --> 72d631 - (Animals)
+			  -- Commit message (1) 
+
+Note : this Merge made by the 'ort' strategy.. because we created new commit in animals before merging Asiaticlions into Animals.
+
+
+.git ---> refs ----> heads -----> Animals {c33e267} Note: BranchNames Exists when there is commit it holds latest commit
+                           -----> lions {a879656}
+						   -----> Asiaticlions {6254913}
+		  HEAD ----> it holds current working branch EX: ref: refs/heads/Animals
+
+
