@@ -1,0 +1,64 @@
+$username = ""
+$password=""
+$SecurePassword = ConvertTo-SecureString "$password" -AsPlainText -Force
+$credentials = New-Object System.Management.Automation.PSCredential($username, $SecurePassword)
+Login-AzAccount -Credential $credentials
+
+
+$TimeStamps = @()
+for($i=0; $i -le 59; $i++){
+	$TimeStamps += "10:{0:D2}" -f $i
+}
+for($i=0; $i -le 59; $i++){
+	$TimeStamps += "11:{0:D2}" -f $i
+}
+for($i=30; $i -le 59; $i++){
+	$TimeStamps += "16:{0:D2}" -f $i
+}
+for($i=0; $i -le 30; $i++){
+	$TimeStamps += "17:{0:D2}" -f $i
+}
+
+
+$VM = Get-AzVM -ResourceGroupName "DailyUpdates" -Name "DailyUpdates" -Status
+$vmRunStats = $VM.Statuses.DisplayStatus
+
+$AMorPM = Get-Date -Format tt
+$HM = Get-Date -UFormat "%A"
+$Day = $HM.Split(' ')
+$twentyfourhr = get-date -format "HH:mm-ss"
+$get = $twentyfourhr.split("-")
+$Day[0]
+if ($Day[0] -eq "Saturday" -Or $Day[0] -eq "Sunday"){
+    if ($vmRunStats -match "VM running"){
+	   Stop-AzVM -ResourceGroupName "DailyUpdates" -Name "DailyUpdates" -Force
+	   Write-Host "oops! Today is Sat or Sun .. VM running to VM deallocated" 
+	}elseif($vmRunStats -match "VM deallocated"){
+	   Write-Host "oops! Today is Sat or Sun .. VM deallocated"
+	}
+}elseif($Day[0] -eq "Monday" -Or $Day[0] -eq "Tuesday" -Or $Day[0] -eq "Wednesday" -Or $Day[0] -eq "Thursday" -Or $Day[0] -eq "Friday"){
+  ForEach ($Stamps in $TimeStamps){
+	if ($get[0] -eq "$Stamps"){
+		if ($vmRunStats -match "VM deallocated"){
+			Start-AzVM -ResourceGroupName "DailyUpdates" -Name "DailyUpdates"
+	        Write-Host "VM running"
+			break
+		}elseif ($vmRunStats -match "VM running"){
+			Write-Host "VM is already running"
+			break
+		}
+		
+  }
+}
+if($get[0] -notin "$Stamps"){
+		if ($vmRunStats -match "VM running"){
+			Stop-AzVM -ResourceGroupName "DailyUpdates" -Name "DailyUpdates" -Force
+	        Write-Host "VM deallocated"
+			break
+		}elseif ($vmRunStats -match "VM deallocated"){
+			Write-Host "VM is already deallocated"
+			break
+		}
+		
+	}
+}
