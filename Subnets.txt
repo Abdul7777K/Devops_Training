@@ -63,6 +63,12 @@ Class C	192.0.0.0 to 223.255.255.0	 192.168.0.0 to 192.168.255.255     255.255.2
 2^(32 - subnet_mask_length)
 2^(32-23) = 2^(9) = 512 ip's for cidr 23.
 
+note: calculate Subnet Masks:
+172.16.0.0/23
+1    1  1  1 1 1 1 1   1    1  1  1 1 1 1 1    1   1  1  1  1 1 1 0    0   0  0  0  0 0 0 0 here, 23 is subnet mask length so 23 bits sets to "1" we need to add "1" consists bytes remain "0" we dont add
+0    0  0  0 0 0 0 0 . 0    0  0  0 0 0 0 0  . 0   0  0  0  0 0 0 0  . 0   0  0  0  0 0 0 0
+128.64.32.16.8.4.2.1 . 128.64.32.16.8.4.2.1  . 128.64.32.16.8.4.2.1  . 128.64.32.16.8.4.2.1    [Bytes]
+
 
 172.16.0.0/21 here 21 is subnet_mask_length
 255.255.248.0
