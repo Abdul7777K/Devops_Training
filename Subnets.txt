@@ -96,3 +96,18 @@ Server [like youtube or any website] to Route [ public Ip to Private Ip] to -> C
 
 FireWall - Restrict the internet Traffic Vnet level.
 Nsg - Restrict the internet Traffic Subnet level/Interface level.
+
+
+How to calculate broadcast Ip:
+192.168.0.0/22
+8+8+6 = 22
+255.255.252.0 -- subnet mask
+2^(32-22) = 2^10 =  1024  Hosts
+192.168.0.0 = network Id
+192.168.3.255 = Broadcast Ip here how broadcast ip forms like below,
+
+0    0  0  0 0 0 0 0   0    0  0  0 0 0 0 0    0   0  0  0  0 0 1 1    1   1  1  1  1 1 1 1  here all hosts sets to 1 and calculate ex: 3.255
+2+1 = 3 and 128+64+32+16+8+4+2+1 = 255
+0    0  0  0 0 0 0 0 . 0    0  0  0 0 0 0 0  . 0   0  0  0  0 0 0 0  . 0   0  0  0  0 0 0 0
+128.64.32.16.8.4.2.1 . 128.64.32.16.8.4.2.1  . 128.64.32.16.8.4.2.1  . 128.64.32.16.8.4.2.1    [Bytes]
+
