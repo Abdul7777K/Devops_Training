@@ -111,3 +111,11 @@ How to calculate broadcast Ip:
 0    0  0  0 0 0 0 0 . 0    0  0  0 0 0 0 0  . 0   0  0  0  0 0 0 0  . 0   0  0  0  0 0 0 0
 128.64.32.16.8.4.2.1 . 128.64.32.16.8.4.2.1  . 128.64.32.16.8.4.2.1  . 128.64.32.16.8.4.2.1    [Bytes]
 
+
+internet:
+
+ISP - Router - Devices
+ISP assign Public Ip to Router, Router assign private Ip to devices
+Router uses NAT to map traffic from devices with private IP addresses to the public IP address assigned by your ISP
+This allows multiple devices in your local network to share the same public IP address when accessing the internet
+
