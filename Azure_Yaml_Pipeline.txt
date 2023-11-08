@@ -1,0 +1,57 @@
+trigger:
+- none
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'production'
+  artifactName: 'my-angular-app'
+  
+stages: 
+- stage: Build
+  jobs:
+    - job:
+      steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '14.x'
+        displayName: 'Install Node.js'
+
+      - script: |
+          npm install
+          npm install -g @angular/cli
+          ng build --configuration $(buildConfiguration)
+        displayName: 'Install dependencies and build Angular application'
+
+      - task: ArchiveFiles@2
+        inputs:
+          rootFolderOrFile: '$(System.DefaultWorkingDirectory)/dist/eshop-app'
+          includeRootFolder: false
+          archiveFile: '$(Build.ArtifactStagingDirectory)/$(artifactName).zip'
+          replaceExistingArchive: true
+        displayName: 'Archive build artifact'
+
+      - task: PublishBuildArtifacts@1
+        inputs:
+          artifactName: '$(artifactName)'
+          publishLocation: 'Container'
+          targetPath: '$(Build.ArtifactStagingDirectory)/$(artifactName).zip'
+        displayName: 'Publish build artifact'
+      - task: DownloadBuildArtifacts@0
+        inputs:
+          artifactName: '$(artifactName)'
+          downloadPath: '$(System.ArtifactsDirectory)'
+          downloadType: 'single'
+          itemPattern: '**/*.zip'
+        displayName: 'Download build artifact'
+
+      - task: AzureRmWebAppDeployment@4
+        inputs:
+          ConnectionType: 'AzureRM'
+          azureSubscription: 'My-New-service-connection'
+          appType: 'webApp'
+          WebAppName: 'Dev-for-front'
+          packageForLinux: '$(Build.ArtifactStagingDirectory)/$(artifactName).zip'
+          RuntimeStack: 'NODE|16-lts'
+          StartupCommand: 'pm2 serve /home/site/wwwroot --no-daemon --spa'
