@@ -1,0 +1,19 @@
+#input_data = [{"t":2,"e":1052,"uuid":"xH2nUU","d":[{"pair":"MMM"},{"pair":"AMD"},{"pair":"AUDCAD"},{"pair":"AUDCHF"},{"pair":"AUDJPY"},{"pair":"AUDNZD"},{"pair":"AUDUSD"},{"pair":"BABA"},{"pair":"AMZN"},{"pair":"AAPL"},{"pair":"ASIA_X"},{"pair":"AVXUSD"},{"pair":"_BRN"},{"pair":"BIDU"},{"pair":"BNBUSD"},{"pair":"Bitcoin"},{"pair":"BCHUSD"},{"pair":"BA"},{"pair":"FCE"},{"pair":"CADCHF"},{"pair":"CADJPY"},{"pair":"CHFJPY"},{"pair":"ADAUSD"},{"pair":"CAT"},{"pair":"LNKUSD"},{"pair":"CVX"},{"pair":"CSCO"},{"pair":"KO"},{"pair":"CMDTY_X"},{"pair":"CRASH_300_X"},{"pair":"FDAX"},{"pair":"DIS"},{"pair":"DOGUSD"},{"pair":"YM"},{"pair":"BRZU"},{"pair":"QID"},{"pair":"UVXY"},{"pair":"IYR"},{"pair":"EURAUD"},{"pair":"EURCAD"},{"pair":"EURCHF"},{"pair":"EURGBP"},{"pair":"EURJPY"},{"pair":"EURNZD"},{"pair":"EURUSD"},{"pair":"FESX"},{"pair":"EOSUSD"},{"pair":"ETHUSD"},{"pair":"EUROPE_X"},{"pair":"XOM"},{"pair":"Z"},{"pair":"GBPAUD"},{"pair":"GBPCAD"},{"pair":"GBPCHF"},{"pair":"GBPJPY"},{"pair":"GBPNZD"},{"pair":"GBPUSD"},{"pair":"XAUUSD"},{"pair":"GS"},{"pair":"GOOGL"},{"pair":"IBM"},{"pair":"JPM"},{"pair":"JNJ"},{"pair":"KSMUSD"},{"pair":"LTCUSD"},{"pair":"MA"},{"pair":"MATUSD"},{"pair":"MCD"},{"pair":"FB"},{"pair":"MSFT"},{"pair":"GLMUSD"},{"pair":"MS"},{"pair":"NQ"},{"pair":"NZDCAD"},{"pair":"NZDCHF"},{"pair":"NZDJPY"},{"pair":"NZDUSD"},{"pair":"NFLX"},{"pair":"NKE"},{"pair":"NOVN"},{"pair":"NVDA"},{"pair":"ORCL"},{"pair":"DOTUSD"},{"pair":"PG"},{"pair":"XRPUSD"},{"pair":"ES"},{"pair":"SPY"},{"pair":"XAGUSD"},{"pair":"SOLUSD"},{"pair":"SBUX"},{"pair":"XLMUSD"},{"pair":"TSLA"},{"pair":"XTZUSD"},{"pair":"USDCAD"},{"pair":"USDCHF"},{"pair":"USDJPY"},{"pair":"UNIUSD"},{"pair":"V"},{"pair":"EBAY"}]}]
+
+
+Json Nested data structure explained below
+
+
+{  ---------- Object
+   
+   
+    [ ------------- Array
+	   {}, -------Object
+	   {}, -------Object
+	
+	]
+
+
+}
+
+Like above structure as many as it consists!
