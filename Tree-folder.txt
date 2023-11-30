@@ -1,0 +1,3 @@
+tree /a /f  # list of files and folders in tree format which is helpful for writing dockerfile using chatgpt
+
+tree /a /f |% { $_ -creplace '^(([ |]   )*)[| ]   ([^+|\\ ])', '$1+---$3' }
