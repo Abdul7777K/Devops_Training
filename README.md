@@ -1,5 +1,5 @@
 ```markdown
-# App Service Plan Module
+# App Service Plan Module.
 
 ## Overview
 This Terraform module creates Azure App Service Plans based on the provided configurations. The module allows for customization of various settings such as location, operating system type, SKU name, worker counts, timeouts, and tags.
