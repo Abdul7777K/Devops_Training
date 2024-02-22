@@ -1,61 +1,163 @@
-```markdown
-# App Service Plan Module.
+# App Service Plan Module
 
-## Overview
-This Terraform module creates Azure App Service Plans based on the provided configurations. The module allows for customization of various settings such as location, operating system type, SKU name, worker counts, timeouts, and tags.
+## Description
+This Terraform module creates Azure App Service Plans based on the provided configuration.
 
 ## Files
 1. **main.tf**
-   - Contains the main configuration for creating Azure App Service Plans.
-   
-   **Variables:**
-   - `app_Service_Plan`: Map object containing configurations for each App Service Plan.
+```hcl
+# Define Azure Service Plan resources based on input variables
+resource "azurerm_service_plan" "example" {
+  for_each                     = var.app_Service_Plan
+  name                         = replace(format("%s-%s-%s", each.key, each.value.appservicename, each.value.location), " ", "")
+  resource_group_name          = each.value.resource_group_name
+  location                     = each.value.location
+  os_type                      = each.value.os_type
+  sku_name                     = each.value.sku_name
+  maximum_elastic_worker_count = each.value.maximum_elastic_worker_count
+  per_site_scaling_enabled     = each.value.per_site_scaling_enabled
+  worker_count                 = each.value.worker_count
+  zone_balancing_enabled       = each.value.zone_balancing_enabled
+  app_service_environment_id   = each.value.app_service_environment_id
+
+  dynamic "timeouts" {
+    for_each = each.value.enable_timeouts == false ? [] : [each.value.timeouts]
+    content {
+      create = timeouts.value.create
+      read   = timeouts.value.read
+      update = timeouts.value.update
+      delete = timeouts.value.delete
+    }
+  }
+
+  tags = merge({ "ResourceName" = format("%s", each.value.appservicename) }, each.value.tags)
+}
+```
 
 2. **variables.tf**
-   - Defines the input variables for the module.
-
-   **Input Variables:**
-   - `app_Service_Plan`: Map object defining the configurations for Azure App Service Plans.
+```hcl
+variable "app_Service_Plan" {
+  type = map(object({
+    appservicename               = string
+    resource_group_name          = string
+    location                     = optional(string, "East US")
+    os_type                      = optional(string, "Windows")
+    sku_name                     = string
+    maximum_elastic_worker_count = number
+    per_site_scaling_enabled     = optional(bool, false)
+    worker_count                 = optional(number, 1)
+    zone_balancing_enabled       = optional(bool, false)
+    app_service_environment_id   = string
+    enable_timeouts              = bool
+    timeouts = object({
+      create = string
+      read   = string
+      update = string
+      delete = string
+    })
+    enable_tags = bool
+    tags = object({
+      Environment           = string
+      Owner                 = string
+      Operations_Team       = string
+      Bussiness_Creticality = string
+      Work_Load             = string
+    })
+  }))
+  default = {
+  }
+  
+  validation {
+    condition = length(flatten([for key, value in var.app_Service_Plan : [for k, v in value.tags : k if v == "" || v == null]])) == 0
+    error_message = "One or more required tags are missing values. Please check."
+  }
+}
+```
 
 3. **output.tf**
-   - Contains the output configurations for the module.
-   
-   **Outputs:**
-   - `app_Service_Plan_id`: Ids of the created App Service Plans.
-   - `App_Service_Plan_kind`: Operating system type of the App Service Plans.
-   - `App_Service_Plan_Sku_Name`: SKU name of the App Service Plans.
+```hcl
+output "app_Service_Plan_id" {
+  description = "App Service Plan Id's"
+  value       = { for k, v in azurerm_service_plan.example : k => v.id }
+}
 
-4. **terraform.tfvars**
-   - Variables file containing configurations for the Azure App Service Plans.
+output "App_Service_Plan_kind" {
+  description = "App Service Plan Kind"
+  value       = { for k, v in azurerm_service_plan.example : k => v.os_type }
+}
+
+output "App_Service_Plan_Sku_Name" {
+  description = "App Service Plan Sku name"
+  value = { for k, v in azurerm_service_plan.example : k => v.sku_name }
+}
+```
 
 ## Usage
-To use this module, provide the configurations in the `terraform.tfvars` file. An example configuration is provided below in a markdown table format.
+```hcl
+module "app_Service_plan_M" {
+  source           = "./App_Service_Plan"
+  app_Service_Plan = var.app_Service_Plan
+  depends_on       = [module.Resource_Groups_M]
+}
 
-| app_Service_Plan | demo-product                                     |
-|------------------|--------------------------------------------------|
-| appservicename   | "appserviceplan09871234567"                      |
-| resource_group_name | "Test-AB1"                                      |
-| location         | "north europe"                                   |
-| os_type          | null                                             |
-| sku_name         | "B1"                                             |
-| maximum_elastic_worker_count | null                              |
-| per_site_scaling_enabled | null                                |
-| worker_count     | null                                             |
-| zone_balancing_enabled | null                                   |
-| app_service_environment_id | null                             |
-| enable_timeouts  | false                                            |
-| timeouts         | create = "", read = "", update = "", delete = "" |
-| enable_tags      | false                                            |
-| tags             | Environment = "Dev", Owner = "Abdul", Operations_Team = "PlatForm_Team", Bussiness_Creticality = "low", Work_Load = "Terraform_Poc" |
+```
 
-## Dependencies
-The module may depend on other modules or resources. Ensure proper dependencies are defined to ensure successful execution.
+4. **terraform.tfvars**
+```hcl
+app_Service_Plan = {
+  "demo-product" = {
+    appservicename               = "appserviceplan09871234567"
+    resource_group_name          = "Test-AB1"
+    location                     = "north europe"
+    os_type                      = null
+    sku_name                     = "B1"
+    maximum_elastic_worker_count = null
+    per_site_scaling_enabled     = null
+    worker_count                 = null
+    zone_balancing_enabled       = null
+    app_service_environment_id   = null
+    enable_timeouts              = false
+    timeouts = {
+      create = ""
+      read   = ""
+      update = ""
+      delete = ""
+    }
+    enable_tags = false
+    tags = {
+      Environment           = "Dev"
+      Owner                 = "Abdul"
+      Operations_Team       = "Platform_Team"
+      Business_Criticality  = "low"
+      Work_Load             = "Terraform_POC"
+    }
+  }
+}
+```
+
+## Variable Requirements
+- **Required Tags**: Owner, Environment, Operations_Team, Business_Criticality, Work_Load  
 
 ## Notes
-- Make sure to define all mandatory tags as per the set standards.
-- Modify the configurations based on your specific requirements.
+- Ensure all required tags are provided in the `terraform.tfvars` file to prevent validation errors.
 
-For any additional information or support, refer to the Terraform documentation or contact the module maintainer.
-```
+| Variable Name | Description | Required |
+|---------------|-------------|----------|
+| app_Service_Plan | Map containing details of app service plans to create | Yes |
+| appservicename | Name of the App Service | Yes |
+| resource_group_name | Name of the Resource Group | Yes |
+| location | Location where the App Service Plan should be created | No (default: East US) |
+| os_type | Operating System for the App Service | No (default: Windows) |
+| sku_name | SKU type for the plan | Yes |
+| maximum_elastic_worker_count | Maximum number of elastic workers | Yes |
+| per_site_scaling_enabled | Enable per-site scaling | No (default: false) |
+| worker_count | Number of workers | No (default: 1) |
+| zone_balancing_enabled | Enable zone balancing | No (default: false) |
+| app_service_environment_id | ID of the app service environment | Yes |
+| enable_timeouts | Enable timeouts | Yes |
+| timeouts | Timeout configurations | Yes |
+| enable_tags | Enable tagging | Yes |
+| tags | Tags for the App Service Plan | Yes |
+
 
 Process finished with exit code 0
