@@ -25,7 +25,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_Rg"></a> [Rg](#input\_Rg) | Resource Group For App Service | `string` | `"qwertyuiopasdfg"` | no |
+| <a name="input_Rg"></a> [Rg](#input\_Rg) | n/a | <pre>map(object({<br>    name = string<br>    location = string<br>  }))</pre> | <pre>{<br>  "R": {<br>    "location": "west us",<br>    "name": "qwertyui"<br>  }<br>}</pre> | no |
 
 ## Outputs
 
