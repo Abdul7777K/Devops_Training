@@ -173,4 +173,77 @@ app_Service_Plan = {
 | tags | Tags for the App Service Plan | Yes |
 
 
+
+# Variable Descriptions/Definitions
+
+## App_Service_Plan\main.tf
+
+### Resource `azurerm_service_plan`
+
+| Variable                        | Description                                                                 |
+|---------------------------------|-----------------------------------------------------------------------------|
+| name                            | Name of the Azure service plan, generated based on inputs                   |
+| resource_group_name             | Name of the resource group to which the service plan belongs               |
+| location                        | Location/region where the service plan is deployed                         |
+| os_type                         | Operating system type for the service plan                                 |
+| sku_name                        | SKU (Stock Keeping Unit) name for the service plan                          |
+| maximum_elastic_worker_count    | Maximum number of elastic workers allowed for the service plan             |
+| per_site_scaling_enabled        | Whether per-site scaling is enabled for the service plan                    |
+| worker_count                    | Number of workers for the service plan                                      |
+| zone_balancing_enabled          | Whether zone balancing is enabled for the service plan                      |
+| app_service_environment_id      | Id of the app service environment associated with the service plan         |
+| timeouts                        | Timeouts for various operations                                             |
+| tags                            | Tags associated with the service plan                                       |
+
+
+## App_Service_Plan\variables.tf
+
+### Variable `app_Service_Plan`
+
+| Variable                        | Description                                                                 |
+|---------------------------------|-----------------------------------------------------------------------------|
+| appservicename                  | Name of the app service associated with the service plan                    |
+| resource_group_name             | Name of the resource group to which the service plan belongs                |
+| location                        | Location/region where the service plan is deployed                          |
+| os_type                         | Operating system type for the service plan                                  |
+| sku_name                        | SKU (Stock Keeping Unit) name for the service plan                           |
+| maximum_elastic_worker_count    | Maximum number of elastic workers allowed for the service plan              |
+| per_site_scaling_enabled        | Whether per-site scaling is enabled for the service plan                     |
+| worker_count                    | Number of workers for the service plan                                       |
+| zone_balancing_enabled          | Whether zone balancing is enabled for the service plan                       |
+| app_service_environment_id      | Id of the app service environment associated with the service plan          |
+| enable_timeouts                 | Flag to enable/disable timeouts for operations                               |
+| timeouts                        | Timeout durations for create, read, update, and delete operations            |
+| enable_tags                    | Flag to enable/disable tagging for the service plan                          |
+| tags                            | Tags with keys: Environment, Owner, Operations_Team, Bussiness_Creticality, and Work_Load |
+
+
+## App_Service_Plan\output.tf
+
+### Outputs
+
+| Output                          | Description                                                                 |
+|---------------------------------|-----------------------------------------------------------------------------|
+| app_Service_Plan_id             | Map of App Service Plan Ids                                                 |
+| App_Service_Plan_kind           | Map of App Service Plan Kind (OS Type)                                      |
+| App_Service_Plan_Sku_Name       | Map of App Service Plan SKU names                                            |
+
+
+## Variables.tf
+
+### Variable `app_Service_Plan`
+
+| Variable                        | Description                                                                 |
+|---------------------------------|-----------------------------------------------------------------------------|
+| Same as described in App_Service_Plan\variables.tf above                        |
+
+
+
+
+---
+This readme file provides a detailed list of variables and their descriptions/definitions used in the Terraform configuration related to Azure service plans.
+
+Process finished with exit code 0
+
+
 Process finished with exit code 0
