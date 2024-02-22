@@ -1,33 +1,51 @@
-<!-- BEGIN_TF_DOCS -->
-## Requirements
+# Module: Azurerm Resource Group
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | 3.91.0 |
+This Terraform module creates an Azure Resource Group based on the specified input parameters.
 
-## Providers
+## Variables
 
-| Name | Version |
-|------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.91.0 |
+### Rg
 
-## Modules
+This variable is of type map with object elements containing the following properties:
+- `name`: (string) The name of the resource group.
+- `location`: (string) The location where the resource group will be created.
 
-No modules.
+The default value of this variable is set to a map with a single element:
+- Key: "R"
+  - `name`: "qwertyui"
+  - `location`: "west us"
 
 ## Resources
 
-| Name | Type |
-|------|------|
-| [azurerm_resource_group.example](https://registry.terraform.io/providers/hashicorp/azurerm/3.91.0/docs/resources/resource_group) | resource |
+### azurerm_resource_group.example
 
-## Inputs
+This resource will create an Azure Resource Group based on the settings provided in the `var.Rg` variable. It will iterate over each element in the map and create a resource group with the specified `name` and `location`.
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_Rg"></a> [Rg](#input\_Rg) | n/a | <pre>map(object({<br>    name = string<br>    location = string<br>  }))</pre> | <pre>{<br>  "R": {<br>    "location": "west us",<br>    "name": "qwertyui"<br>  }<br>}</pre> | no |
+## Example Usage
 
-## Outputs
+```hcl
+module "example_rg" {
+  source = "path/to/module"
 
-No outputs.
-<!-- END_TF_DOCS -->
+  Rg = {
+    "R1" = {
+      name = "example-rg1"
+      location = "east us"
+    },
+    "R2" = {
+      name = "example-rg2"
+      location = "west europe"
+    }
+  }
+}
+```
+
+In this example, two Azure Resource Groups will be created based on the values provided in the `Rg` variable.
+
+## Author
+
+Submitted by: [Your Name]
+
+## License
+
+This module is licensed under the [MIT License](link-to-license).
