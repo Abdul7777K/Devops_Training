@@ -1,51 +1,44 @@
-# Module: Azurerm Resource Group
+# Variable "Rg"
 
-This Terraform module creates an Azure Resource Group based on the specified input parameters.
-
-## Variables
-
-### Rg
-
-This variable is of type map with object elements containing the following properties:
-- `name`: (string) The name of the resource group.
-- `location`: (string) The location where the resource group will be created.
-
-The default value of this variable is set to a map with a single element:
-- Key: "R"
-  - `name`: "qwertyui"
-  - `location`: "west us"
-
-## Resources
-
-### azurerm_resource_group.example
-
-This resource will create an Azure Resource Group based on the settings provided in the `var.Rg` variable. It will iterate over each element in the map and create a resource group with the specified `name` and `location`.
-
-## Example Usage
+This variable `Rg` is a map type variable which contains objects with two attributes: `name` (string) and `location` (string). The default value for this variable is set to a map with a single entry for "R":
 
 ```hcl
-module "example_rg" {
-  source = "path/to/module"
-
-  Rg = {
-    "R1" = {
-      name = "example-rg1"
-      location = "east us"
-    },
-    "R2" = {
-      name = "example-rg2"
-      location = "west europe"
+variable "Rg" {
+  type = map(object({
+    name     = string
+    location = string
+  }))
+  default = {
+    "R" = {
+      name     = "qwertyui"
+      location = "west us"
     }
   }
 }
 ```
 
-In this example, two Azure Resource Groups will be created based on the values provided in the `Rg` variable.
+## Resource Creation
 
-## Author
+The `azurerm_resource_group` resource named "example" is created using the values provided in the variable `Rg`.
 
-Submitted by: [Your Name]
+```hcl
+resource "azurerm_resource_group" "example" {
+  for_each  = var.Rg
+  name      = each.value.name
+  location  = each.value.location
+}
+```
 
-## License
+## Generating Terraform Documentation
 
-This module is licensed under the [MIT License](link-to-license).
+To automatically generate documentation for the Terraform variable and resource using `terraform-docs`, you can run the following command:
+
+```bash
+terraform-docs markdown table --output-file README.md --output-mode inject
+```
+
+After running the above command, the README.md file will be updated with a markdown table that includes the information about the variable `Rg` and the resource `azurerm_resource_group`.
+
+Please make sure to run the `terraform-docs` command in the same directory where your Terraform configurations are located.
+
+Process finished with exit code 0
