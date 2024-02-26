@@ -1,0 +1,90 @@
+"""
+GET https://graph.microsoft.com/v1.0/me/ HTTP/1.1
+Host: graph.microsoft.com
+Authorization: Bearer EwAoA8l6BAAU ... 7PqHGsykYj7A0XqHCjbKKgWSkcAg==
+
+"""
+
+
+"""
+Get Access token for Graph:
+
+PowerShell:
+
+#region Authentication
+#We use the client credentials flow as an example. For production use, REPLACE the code below with your preferred auth method. NEVER STORE CREDENTIALS IN PLAIN TEXT!!!
+
+#Variables to configure
+$tenantID = "7cc14b5b-fabc-48c4-82ac-570f0099fec2" #your tenantID or tenant root domain
+$appID = "fdc290e0-4b4b-47d8-957e-3529e56d999e" #the GUID of your app.
+$client_secret = "g4E8Q~cOLL5wX_9_ASad7wzwjrbGbDGb7IelGckG" #client secret for the app
+
+#Prepare token request
+$url = 'https://login.microsoftonline.com/' + $tenantId + '/oauth2/v2.0/token'
+
+$body = @{
+    grant_type = "client_credentials"
+    client_id = $appID
+    client_secret = $client_secret
+    scope = "https://graph.microsoft.com/.default"
+}
+
+#Obtain the token
+Write-Verbose "Authenticating..."
+try { $tokenRequest = Invoke-WebRequest -Method Post -Uri $url -ContentType "application/x-www-form-urlencoded" -Body $body -UseBasicParsing -ErrorAction Stop }
+catch { Write-Host "Unable to obtain access token, aborting..."; return }
+
+$token = ($tokenRequest.Content | ConvertFrom-Json).access_token
+
+$authHeader = @{
+   'Content-Type'='application\json'
+   'Authorization'="Bearer $token"
+}
+#endregion Authentication
+$token
+
+
+
+"""
+
+import requests, json
+url = "https://graph.microsoft.com/beta/users/Abdul@dileepkumar7777outlook.onmicrosoft.com"
+
+headers = {
+    "Content-Type" : "application/json",
+    "Authorization" : "eyJ0eXAiOiJKV1QiLCJub25jZSI6ImhwODltcXM0WEdkZDRmeG5ObGtTWkxXcHlYNkNYcnZtcHdla19xYWMtdDAiLCJhbGciOiJSUzI1NiIsIng1dCI6IlhSdmtvOFA3QTNVYVdTblU3Yk05blQwTWpoQSIsImtpZCI6IlhSdmtvOFA3QTNVYVdTblU3Yk05blQwTWpoQSJ9.eyJhdWQiOiJodHRwczovL2dyYXBoLm1pY3Jvc29mdC5jb20iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC83Y2MxNGI1Yi1mYWJjLTQ4YzQtODJhYy01NzBmMDA5OWZlYzIvIiwiaWF0IjoxNzA4OTQ2MjE4LCJuYmYiOjE3MDg5NDYyMTgsImV4cCI6MTcwODk1MDExOCwiYWlvIjoiRTJOZ1lQRFMzbnV3NjhjWDhRK3liVkl2ODE4dUF3QT0iLCJhcHBfZGlzcGxheW5hbWUiOiJ0ZXJyYWZyb20tY2xvdWQiLCJhcHBpZCI6ImZkYzI5MGUwLTRiNGItNDdkOC05NTdlLTM1MjllNTZkOTk5ZSIsImFwcGlkYWNyIjoiMSIsImlkcCI6Imh0dHBzOi8vc3RzLndpbmRvd3MubmV0LzdjYzE0YjViLWZhYmMtNDhjNC04MmFjLTU3MGYwMDk5ZmVjMi8iLCJpZHR5cCI6ImFwcCIsIm9pZCI6ImFkYTY1NzI1LTgwYzgtNGEzMy1hNDA0LTAwMGE3MjJhMTVlNSIsInJoIjoiMC5BU3NBVzB2QmZMejZ4RWlDckZjUEFKbi13Z01BQUFBQUFBQUF3QUFBQUFBQUFBRENBQUEuIiwicm9sZXMiOlsiVXNlci5SZWFkV3JpdGUuQWxsIiwiRGlyZWN0b3J5LlJlYWRXcml0ZS5BbGwiLCJEaXJlY3RvcnkuUmVhZC5BbGwiLCJVc2VyLlJlYWQuQWxsIl0sInN1YiI6ImFkYTY1NzI1LTgwYzgtNGEzMy1hNDA0LTAwMGE3MjJhMTVlNSIsInRlbmFudF9yZWdpb25fc2NvcGUiOiJBUyIsInRpZCI6IjdjYzE0YjViLWZhYmMtNDhjNC04MmFjLTU3MGYwMDk5ZmVjMiIsInV0aSI6IlBCZURjS1owUkUtWVZvc1MxbkY1QUEiLCJ2ZXIiOiIxLjAiLCJ3aWRzIjpbIjA5OTdhMWQwLTBkMWQtNGFjYi1iNDA4LWQ1Y2E3MzEyMWU5MCJdLCJ4bXNfdGNkdCI6MTcwNjA3ODkzNH0.TBd9u73dtEWmiy_NM3X2xlkqCDdsWhO4Ptedy2vLPPHRZkYUjWZEW_QukXorjkmTmB6bDCO0zCX6ErHqlnkesXyZGXatI6HFUqVyo_c4rz2IOoPirlgYaYUP1nn1FKqeK9oLPuZ2ulUSONX6aWbztDxnr0CkfUqlGfwlGZlZZXq7mVJQOA1rVWiZmRBtv-kNbsssBxJhXNFX4KV9IXzO-7LfPuxh2L7_33IYRDitR2L8IAvuiNB8noLOoX1hBXi6nvzJY53OEGw5Y0JcMlSUEsMtKePu88ofgf8gizlI0AlDbKMsXjGQCfxG4a6JYcXDRWx4uNTrz9F3Ifh_Is6KoA"
+}
+
+res = requests.get(url=url,headers=headers)
+print(res.text)
+
+Payload = {
+
+    "extension_fdc290e04b4b47d8957e3529e56d999e_QRScan": "QRSCAN---12345"  #custom attribute
+
+}
+#Create Custom Attribute
+
+createEx = "https://graph.microsoft.com/v1.0/applications/6d7866e7-c29b-426b-814b-2090025fa614/extensionProperties"
+
+payloads = {
+    "name": "QRScan",
+    "dataType": "String",
+    "targetObjects": [
+        "User"
+    ]
+}
+
+post = requests.post(url=url, headers=headers, data=json.dumps(Payload))
+print(post.status_code)
+
+
+#create extension attribute-custom - extension_{appId-without-hyphens}_{extensionProperty-name}
+#create extension attribute  to this will assign a SAS value and Update
+
+
+
+#30 QR--
+
+
+
