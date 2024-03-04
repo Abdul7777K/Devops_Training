@@ -1,0 +1,11 @@
+create sonar windows
+
+1.https://docs.sonarsource.com/sonarqube/latest/requirements/prerequisites-and-overview/
+
+2.https://www.sonarsource.com/products/sonarqube/downloads/
+
+3.restart computer
+
+4.https://stackoverflow.com/questions/65490655/access-sonarqube-port-9000-outside-publicly-the-azure-vm
+
+5. add inbound rule port 9000
