@@ -1,0 +1,16 @@
+firstname = {"A","B","D","U","L"}
+lastname = {"K","H","A","D","A","R"}
+
+
+# sets --> {} : mutable
+# dicts --> {k:v} mutable
+# tuples --> () : immutable
+# lists --> [] : mutable
+
+# & duplicates returns    (AND)  ----  first precedence
+# ^ not duplicates returns (XOR) ----  second precedence
+# | fuse duplicates as one return everything (OR) ----  third precedence
+
+
+print(firstname ^ lastname)
+
