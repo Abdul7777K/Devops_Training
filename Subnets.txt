@@ -58,6 +58,13 @@ Class C	192.0.0.0 to 223.255.255.0	 192.168.0.0 to 192.168.255.255     255.255.2
  
 ...........calculations..................
 
+
+In Private IP Range
+1  2 3 4 octet's
+10.0.0.0 to 10.255.255.255 we can have any number from 2nd octet i.e for 2nd - 0 to 255 for 3rd - 0 to 255 for 4th - 0 to 255
+similarly for remaining Private IP Range same.
+
+
 172.16.0.0/23 here 23 is subnet_mask_length
 255.255.254.0
 2^(32 - subnet_mask_length)
